@@ -5,7 +5,9 @@ import (
 	"reflect"
 )
 
-type arrayList[T any] struct {
+type Comparator[T any] func(a, b T) bool
+
+type arrayList[T comparable] struct {
 	items []T
 
 	size        int
@@ -13,8 +15,7 @@ type arrayList[T any] struct {
 	scaleFactor float64
 }
 
-// returns empty array list with node == nil and scale factor 0.8
-func NewArrayList[T any]() *arrayList[T] {
+func NewArrayList[T comparable]() *arrayList[T] {
 	return &arrayList[T]{
 		cap:         10,
 		items:       make([]T, 10),
@@ -35,14 +36,11 @@ func (a *arrayList[T]) Add(item T) error {
 
 func (a *arrayList[T]) Insert(item T, pos int) error {
 	if pos < 0 || pos >= a.size {
-		return fmt.Errorf("insert in out of bounds")
+		return fmt.Errorf(ErrOutOfBounds)
 	}
 	if a.size >= int(float64(a.cap)*a.scaleFactor) {
 		a.resizeArray()
 	}
-	// example: [0 1 2 3 4 5 6 7 0 0 0 0 0]
-	// pos = 3, item = 15
-	// will be: [0 1 2 15 3 4 5 6 7 0 0 0 0]
 	newItems := make([]T, a.cap)
 	copy(newItems, a.items[:pos])
 	copy(newItems[pos+1:], a.items[pos:a.size])
@@ -54,7 +52,7 @@ func (a *arrayList[T]) Insert(item T, pos int) error {
 
 func (a *arrayList[T]) RemoveLast() error {
 	if a.size == 0 {
-		return fmt.Errorf("list is empty")
+		return fmt.Errorf(ErrEmpty)
 	}
 	a.items = a.items[:a.size]
 	a.size--
@@ -63,7 +61,7 @@ func (a *arrayList[T]) RemoveLast() error {
 
 func (a *arrayList[T]) RemoveVal(item T) (int, error) {
 	if a.size == 0 {
-		return -1, fmt.Errorf("list is empty")
+		return -1, fmt.Errorf(ErrEmpty)
 	}
 
 	pos, err := a.findFirst(item)
@@ -81,25 +79,26 @@ func (a *arrayList[T]) RemoveVal(item T) (int, error) {
 
 func (a *arrayList[T]) RemoveAt(pos int) error {
 	if a.size == 0 {
-		return fmt.Errorf("list is empty")
+		return fmt.Errorf(ErrEmpty)
 	}
 
 	if pos < 0 || pos >= a.size {
-		return fmt.Errorf("removing from out of bounds")
+		return fmt.Errorf(ErrOutOfBounds)
 	}
 
-	a.items = append(a.items[:pos], a.items[pos+1:]...)
+	copy(a.items[pos:], a.items[pos+1:a.size])
+	a.items[a.size-1] = *new(T)
 	a.size--
 	return nil
 }
 
 func (a *arrayList[T]) Set(item T, pos int) error {
 	if a.size == 0 {
-		return fmt.Errorf("list is empty")
+		return fmt.Errorf(ErrEmpty)
 	}
 
 	if pos < 0 || pos >= a.size {
-		return fmt.Errorf("removing from out of bounds")
+		return fmt.Errorf(ErrOutOfBounds)
 	}
 
 	a.items[pos] = item
@@ -108,11 +107,11 @@ func (a *arrayList[T]) Set(item T, pos int) error {
 
 func (a *arrayList[T]) Get(pos int) (*T, error) {
 	if a.size == 0 {
-		return nil, fmt.Errorf("list is empty")
+		return nil, fmt.Errorf(ErrEmpty)
 	}
 
 	if pos < 0 || pos >= a.size {
-		return nil, fmt.Errorf("removing from out of bounds")
+		return nil, fmt.Errorf(ErrOutOfBounds)
 	}
 
 	return &a.items[pos], nil
@@ -120,10 +119,11 @@ func (a *arrayList[T]) Get(pos int) (*T, error) {
 
 func (a *arrayList[T]) GetPosition(item T) (int, error) {
 	if a.size == 0 {
-		return -1, fmt.Errorf("list is empty")
+		return -1, fmt.Errorf(ErrEmpty)
 	}
 	pos, err := a.findFirst(item)
 	if err != nil {
+		// if err != nil -> err.Error() = "not found"
 		return -1, err
 	}
 
@@ -136,7 +136,7 @@ func (a *arrayList[T]) Size() int {
 
 func (a *arrayList[T]) Clear() error {
 	if a.size == 0 {
-		return fmt.Errorf("list is empty")
+		return fmt.Errorf(ErrEmpty)
 	}
 	a.items = a.items[:0]
 	a.size = 0
@@ -150,6 +150,26 @@ func (a *arrayList[T]) Contains(item T) bool {
 	}
 
 	return false
+}
+
+func (a *arrayList[T]) SortAscending(compare Comparator[T], sortType int) error {
+	if a.size == 0 {
+		return fmt.Errorf(ErrEmpty)
+	}
+	switch sortType {
+	case MergeSort:
+		a.mergeSort(compare)
+	case QuickSort:
+		a.quickSort(compare)
+	case TimSort:
+		a.timSort(compare)
+	case BubbleSort:
+		a.bubbleSort(compare)
+	default:
+		return fmt.Errorf("chooose sort type: \n0: timSort \n1: quickSort \n2: mergeSort \n3: bubbleSort")
+	}
+
+	return nil
 }
 
 func (a *arrayList[T]) resizeArray() {
@@ -166,5 +186,5 @@ func (a *arrayList[T]) findFirst(item T) (int, error) {
 			return i, nil
 		}
 	}
-	return -1, fmt.Errorf("not found")
+	return -1, fmt.Errorf(ErrNotFound)
 }
