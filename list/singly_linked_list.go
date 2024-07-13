@@ -1,0 +1,232 @@
+package list
+
+import (
+	"fmt"
+	"reflect"
+)
+
+type node[T comparable] struct {
+	val  T
+	next *node[T]
+}
+
+type singlyLinkedList[T comparable] struct {
+	head *node[T]
+	tail *node[T]
+
+	size int
+}
+
+func NewSinglyLinked[T comparable]() *singlyLinkedList[T] {
+	return &singlyLinkedList[T]{}
+}
+
+func (l *singlyLinkedList[T]) Add(item T) error {
+	node := &node[T]{val: item}
+	if l.size == 0 {
+		l.head = node
+		l.tail = node
+	} else {
+		l.tail.next = node
+		l.tail = l.tail.next
+	}
+	l.size++
+	return nil
+}
+
+func (l *singlyLinkedList[T]) Insert(item T, pos int) error {
+	if l.size == 0 {
+		return l.Add(item)
+	}
+	if pos < 0 || pos > l.size {
+		return fmt.Errorf(ErrOutOfBounds)
+	}
+	if pos == 0 {
+		node := &node[T]{val: item, next: l.head}
+		l.head = node
+		l.size++
+		return nil
+	}
+
+	dummy := l.head
+	cnt := 0
+	for cnt != pos-1 {
+		dummy = dummy.next
+		cnt++
+	}
+	node := &node[T]{val: item, next: dummy.next}
+	dummy.next = node
+	l.size++
+	return nil
+}
+
+func (l *singlyLinkedList[T]) RemoveLast() error {
+	if l.size == 0 {
+		return fmt.Errorf(ErrEmpty)
+	}
+	if l.size == 1 {
+		l.head = nil
+		l.size--
+		return nil
+	}
+	dummy := l.head
+	cnt := 0
+	for cnt < l.size-2 {
+		dummy = dummy.next
+		cnt++
+	}
+	// 1 3 5 7 8 9 <- before removing
+	// 1 3 5 7 8 <- must be after
+	// traverse to size-1 pos -> 1 3 5 7 [8] 9
+	//
+	l.tail = dummy
+	dummy.next = nil
+	l.size--
+	return nil
+}
+
+func (l *singlyLinkedList[T]) RemoveVal(item T) (int, error) {
+	if l.size == 0 {
+		return -1, fmt.Errorf(ErrEmpty)
+	}
+
+	if reflect.DeepEqual(l.head.val, item) {
+		l.head = l.head.next
+		l.size--
+		if l.size == 0 {
+			l.tail = nil
+		}
+		return 0, nil
+	}
+
+	dummy := l.head
+	cnt := 0
+	for dummy.next != nil {
+		if reflect.DeepEqual(dummy.next.val, item) {
+			dummy.next = dummy.next.next
+			if dummy.next == nil {
+				l.tail = dummy
+			}
+			l.size--
+			return cnt + 1, nil
+		}
+		dummy = dummy.next
+		cnt++
+	}
+	return -1, fmt.Errorf(ErrNotFound)
+}
+
+func (l *singlyLinkedList[T]) RemoveAt(pos int) error {
+	if l.size == 0 {
+		return fmt.Errorf(ErrEmpty)
+	}
+
+	if pos < 0 || pos > l.size {
+		return fmt.Errorf(ErrOutOfBounds)
+	}
+
+	dummy := l.head
+	cnt := 0
+	for cnt < pos-1 {
+		dummy = dummy.next
+		cnt++
+	}
+	dummy.next = dummy.next.next
+	l.size--
+	return nil
+}
+
+func (l *singlyLinkedList[T]) Set(item T, pos int) error {
+	if l.size == 0 {
+		return fmt.Errorf(ErrEmpty)
+	}
+
+	if pos < 0 || pos > l.size {
+		return fmt.Errorf(ErrOutOfBounds)
+	}
+
+	dummy := l.head
+	cnt := 0
+	for cnt < pos {
+		dummy = dummy.next
+		cnt++
+	}
+	dummy.val = item
+	return nil
+}
+
+func (l *singlyLinkedList[T]) Get(pos int) (*T, error) {
+	if l.size == 0 {
+		return nil, fmt.Errorf(ErrEmpty)
+	}
+
+	if pos < 0 || pos > l.size {
+		return nil, fmt.Errorf(ErrOutOfBounds)
+	}
+
+	dummy := l.head
+	cnt := 0
+	for cnt != pos {
+		dummy = dummy.next
+		cnt++
+	}
+	return &dummy.val, nil
+}
+
+func (l *singlyLinkedList[T]) GetPosition(item T) (int, error) {
+	if l.size == 0 {
+		return -1, fmt.Errorf(ErrEmpty)
+	}
+	dummy := l.head
+	cnt := 0
+	for dummy != nil {
+		if reflect.DeepEqual(dummy.val, item) {
+			return cnt, nil
+		}
+		dummy = dummy.next
+		cnt++
+	}
+	return -1, fmt.Errorf(ErrNotFound)
+}
+
+func (l *singlyLinkedList[T]) Size() int {
+	return l.size
+}
+
+func (l *singlyLinkedList[T]) Clear() error {
+	l.head = nil
+	l.tail = nil
+	l.size = 0
+	return nil
+}
+
+func (l *singlyLinkedList[T]) Print() {
+	fmt.Println("size:", l.size)
+	fmt.Println("data:")
+	dummy := l.head
+	cnt := 0
+	fmt.Print("[ ")
+	for dummy != nil {
+		fmt.Printf("%v:", cnt)
+		fmt.Printf("val=%+v; ", dummy.val)
+		dummy = dummy.next
+		cnt++
+	}
+	fmt.Print(" ]\n")
+}
+
+func (l *singlyLinkedList[T]) Contains(item T) bool {
+	if l.size == 0 {
+		return false
+	}
+	dummy := l.head
+	cnt := 0
+	for dummy != nil {
+		if reflect.DeepEqual(dummy.val, item) {
+			return true
+		}
+		dummy = dummy.next
+		cnt++
+	}
+	return false
+}
