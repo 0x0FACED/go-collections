@@ -53,7 +53,7 @@ func (c *csll[T]) Insert(item T, pos int) error {
 
 	dummy := c.head
 	cnt := 0
-	for cnt != pos-1 {
+	for cnt < pos-1 {
 		dummy = dummy.next
 		cnt++
 	}
