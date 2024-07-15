@@ -266,7 +266,7 @@ func TestArrayList_TimSort(t *testing.T) {
 	list.Add(Person{Name: "Bob", Age: 25})
 	list.Add(Person{Name: "Alex", Age: 35})
 
-	err := list.SortAscending(comparePersonByName, TimSort) // 0: TimSort
+	err := list.Sort(comparePersonByName, TimSort) // 0: TimSort
 	if err != nil {
 		fmt.Println("Error:", err)
 	} else {
@@ -291,7 +291,7 @@ func TestArrayList_MergeSort(t *testing.T) {
 	list.Add(Person{Name: "Bob", Age: 25})
 	list.Add(Person{Name: "Alex", Age: 35})
 
-	err := list.SortAscending(comparePersonByName, MergeSort) // 0: TimSort
+	err := list.Sort(comparePersonByName, MergeSort) // 2: MergeSort
 	if err != nil {
 		fmt.Println("Error:", err)
 	} else {
@@ -316,7 +316,7 @@ func TestArrayList_QuickSort(t *testing.T) {
 	list.Add(Person{Name: "Bob", Age: 25})
 	list.Add(Person{Name: "Alex", Age: 35})
 
-	err := list.SortAscending(comparePersonByName, QuickSort) // 0: TimSort
+	err := list.Sort(comparePersonByName, QuickSort) // 1: QuickSort
 	if err != nil {
 		fmt.Println("Error:", err)
 	} else {
@@ -341,7 +341,7 @@ func TestArrayList_BubbleSort(t *testing.T) {
 	list.Add(Person{Name: "Bob", Age: 25})
 	list.Add(Person{Name: "Alex", Age: 35})
 
-	err := list.SortAscending(comparePersonByName, BubbleSort) // 0: TimSort
+	err := list.Sort(comparePersonByName, BubbleSort) // 3: BubbleSort
 	if err != nil {
 		fmt.Println("Error:", err)
 	} else {
