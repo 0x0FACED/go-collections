@@ -1,5 +1,10 @@
 package list
 
+type node[T comparable] struct {
+	val  T
+	next *node[T]
+}
+
 type list[T comparable] interface {
 	// Add adds val to the end of list
 	Add(item T) error
