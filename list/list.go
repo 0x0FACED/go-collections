@@ -1,5 +1,13 @@
 package list
 
+// dnode is a dobule node - node with next and prev ptrs
+type dnode[T comparable] struct {
+	val T
+
+	next *dnode[T]
+	prev *dnode[T]
+}
+
 type node[T comparable] struct {
 	val  T
 	next *node[T]
