@@ -3,12 +3,9 @@ package list
 import (
 	"fmt"
 	"reflect"
-)
 
-type node[T comparable] struct {
-	val  T
-	next *node[T]
-}
+	gocollections "github.com/0x0FACED/go-collections"
+)
 
 type singlyLinkedList[T comparable] struct {
 	head *node[T]
@@ -38,9 +35,11 @@ func (l *singlyLinkedList[T]) Insert(item T, pos int) error {
 	if l.size == 0 {
 		return l.Add(item)
 	}
+
 	if pos < 0 || pos > l.size {
-		return fmt.Errorf(ErrOutOfBounds)
+		return fmt.Errorf(gocollections.ErrOutOfBounds)
 	}
+
 	if pos == 0 {
 		node := &node[T]{val: item, next: l.head}
 		l.head = node
@@ -62,7 +61,7 @@ func (l *singlyLinkedList[T]) Insert(item T, pos int) error {
 
 func (l *singlyLinkedList[T]) RemoveLast() error {
 	if l.size == 0 {
-		return fmt.Errorf(ErrEmpty)
+		return fmt.Errorf(gocollections.ErrEmpty)
 	}
 	if l.size == 1 {
 		l.head = nil
@@ -71,7 +70,7 @@ func (l *singlyLinkedList[T]) RemoveLast() error {
 	}
 	dummy := l.head
 	cnt := 0
-	for cnt < l.size-2 {
+	for cnt != l.size-2 {
 		dummy = dummy.next
 		cnt++
 	}
@@ -87,7 +86,7 @@ func (l *singlyLinkedList[T]) RemoveLast() error {
 
 func (l *singlyLinkedList[T]) RemoveVal(item T) (int, error) {
 	if l.size == 0 {
-		return -1, fmt.Errorf(ErrEmpty)
+		return -1, fmt.Errorf(gocollections.ErrEmpty)
 	}
 
 	if reflect.DeepEqual(l.head.val, item) {
@@ -113,16 +112,16 @@ func (l *singlyLinkedList[T]) RemoveVal(item T) (int, error) {
 		dummy = dummy.next
 		cnt++
 	}
-	return -1, fmt.Errorf(ErrNotFound)
+	return -1, fmt.Errorf(gocollections.ErrNotFound)
 }
 
 func (l *singlyLinkedList[T]) RemoveAt(pos int) error {
 	if l.size == 0 {
-		return fmt.Errorf(ErrEmpty)
+		return fmt.Errorf(gocollections.ErrEmpty)
 	}
 
 	if pos < 0 || pos > l.size {
-		return fmt.Errorf(ErrOutOfBounds)
+		return fmt.Errorf(gocollections.ErrOutOfBounds)
 	}
 
 	dummy := l.head
@@ -138,11 +137,11 @@ func (l *singlyLinkedList[T]) RemoveAt(pos int) error {
 
 func (l *singlyLinkedList[T]) Set(item T, pos int) error {
 	if l.size == 0 {
-		return fmt.Errorf(ErrEmpty)
+		return fmt.Errorf(gocollections.ErrEmpty)
 	}
 
 	if pos < 0 || pos > l.size {
-		return fmt.Errorf(ErrOutOfBounds)
+		return fmt.Errorf(gocollections.ErrOutOfBounds)
 	}
 
 	dummy := l.head
@@ -157,11 +156,11 @@ func (l *singlyLinkedList[T]) Set(item T, pos int) error {
 
 func (l *singlyLinkedList[T]) Get(pos int) (*T, error) {
 	if l.size == 0 {
-		return nil, fmt.Errorf(ErrEmpty)
+		return nil, fmt.Errorf(gocollections.ErrEmpty)
 	}
 
 	if pos < 0 || pos > l.size {
-		return nil, fmt.Errorf(ErrOutOfBounds)
+		return nil, fmt.Errorf(gocollections.ErrOutOfBounds)
 	}
 
 	dummy := l.head
@@ -175,7 +174,7 @@ func (l *singlyLinkedList[T]) Get(pos int) (*T, error) {
 
 func (l *singlyLinkedList[T]) GetPosition(item T) (int, error) {
 	if l.size == 0 {
-		return -1, fmt.Errorf(ErrEmpty)
+		return -1, fmt.Errorf(gocollections.ErrEmpty)
 	}
 	dummy := l.head
 	cnt := 0
@@ -186,7 +185,7 @@ func (l *singlyLinkedList[T]) GetPosition(item T) (int, error) {
 		dummy = dummy.next
 		cnt++
 	}
-	return -1, fmt.Errorf(ErrNotFound)
+	return -1, fmt.Errorf(gocollections.ErrNotFound)
 }
 
 func (l *singlyLinkedList[T]) Size() int {
