@@ -3,6 +3,8 @@ package list
 import (
 	"fmt"
 	"reflect"
+
+	gocollections "github.com/0x0FACED/go-collections"
 )
 
 type Comparator[T any] func(a, b T) bool
@@ -36,7 +38,7 @@ func (a *arrayList[T]) Add(item T) error {
 
 func (a *arrayList[T]) Insert(item T, pos int) error {
 	if pos < 0 || pos >= a.size {
-		return fmt.Errorf(ErrOutOfBounds)
+		return fmt.Errorf(gocollections.ErrOutOfBounds)
 	}
 	if a.size >= int(float64(a.cap)*a.scaleFactor) {
 		a.resizeArray()
@@ -52,7 +54,7 @@ func (a *arrayList[T]) Insert(item T, pos int) error {
 
 func (a *arrayList[T]) RemoveLast() error {
 	if a.size == 0 {
-		return fmt.Errorf(ErrEmpty)
+		return fmt.Errorf(gocollections.ErrEmpty)
 	}
 	a.items = a.items[:a.size]
 	a.size--
@@ -61,7 +63,7 @@ func (a *arrayList[T]) RemoveLast() error {
 
 func (a *arrayList[T]) RemoveVal(item T) (int, error) {
 	if a.size == 0 {
-		return -1, fmt.Errorf(ErrEmpty)
+		return -1, fmt.Errorf(gocollections.ErrEmpty)
 	}
 
 	pos, err := a.findFirst(item)
@@ -79,11 +81,11 @@ func (a *arrayList[T]) RemoveVal(item T) (int, error) {
 
 func (a *arrayList[T]) RemoveAt(pos int) error {
 	if a.size == 0 {
-		return fmt.Errorf(ErrEmpty)
+		return fmt.Errorf(gocollections.ErrEmpty)
 	}
 
 	if pos < 0 || pos >= a.size {
-		return fmt.Errorf(ErrOutOfBounds)
+		return fmt.Errorf(gocollections.ErrOutOfBounds)
 	}
 
 	copy(a.items[pos:], a.items[pos+1:a.size])
@@ -94,11 +96,11 @@ func (a *arrayList[T]) RemoveAt(pos int) error {
 
 func (a *arrayList[T]) Set(item T, pos int) error {
 	if a.size == 0 {
-		return fmt.Errorf(ErrEmpty)
+		return fmt.Errorf(gocollections.ErrEmpty)
 	}
 
 	if pos < 0 || pos >= a.size {
-		return fmt.Errorf(ErrOutOfBounds)
+		return fmt.Errorf(gocollections.ErrOutOfBounds)
 	}
 
 	a.items[pos] = item
@@ -107,11 +109,11 @@ func (a *arrayList[T]) Set(item T, pos int) error {
 
 func (a *arrayList[T]) Get(pos int) (*T, error) {
 	if a.size == 0 {
-		return nil, fmt.Errorf(ErrEmpty)
+		return nil, fmt.Errorf(gocollections.ErrEmpty)
 	}
 
 	if pos < 0 || pos >= a.size {
-		return nil, fmt.Errorf(ErrOutOfBounds)
+		return nil, fmt.Errorf(gocollections.ErrOutOfBounds)
 	}
 
 	return &a.items[pos], nil
@@ -119,7 +121,7 @@ func (a *arrayList[T]) Get(pos int) (*T, error) {
 
 func (a *arrayList[T]) GetPosition(item T) (int, error) {
 	if a.size == 0 {
-		return -1, fmt.Errorf(ErrEmpty)
+		return -1, fmt.Errorf(gocollections.ErrEmpty)
 	}
 	pos, err := a.findFirst(item)
 	if err != nil {
@@ -136,7 +138,7 @@ func (a *arrayList[T]) Size() int {
 
 func (a *arrayList[T]) Clear() error {
 	if a.size == 0 {
-		return fmt.Errorf(ErrEmpty)
+		return fmt.Errorf(gocollections.ErrEmpty)
 	}
 	a.items = a.items[:0]
 	a.size = 0
@@ -152,9 +154,9 @@ func (a *arrayList[T]) Contains(item T) bool {
 	return false
 }
 
-func (a *arrayList[T]) SortAscending(compare Comparator[T], sortType int) error {
+func (a *arrayList[T]) Sort(compare Comparator[T], sortType int) error {
 	if a.size == 0 {
-		return fmt.Errorf(ErrEmpty)
+		return fmt.Errorf(gocollections.ErrEmpty)
 	}
 	switch sortType {
 	case MergeSort:
@@ -186,5 +188,5 @@ func (a *arrayList[T]) findFirst(item T) (int, error) {
 			return i, nil
 		}
 	}
-	return -1, fmt.Errorf(ErrNotFound)
+	return -1, fmt.Errorf(gocollections.ErrNotFound)
 }
