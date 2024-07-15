@@ -2,7 +2,7 @@
 
 This library provides implementations of various collection data structures fully writen in Golang.
 
-## Data Sctructures
+## Data Structures
 
 - [x] Array List
 - [x] Singly Linked List
