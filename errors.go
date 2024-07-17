@@ -1,7 +1,7 @@
 package gocollections
 
 const (
-	ErrEmpty       = "list is empty"
+	ErrEmpty       = "empty"
 	ErrOutOfBounds = "out of bounds"
 	ErrNotFound    = "not found"
 )
