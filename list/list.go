@@ -14,7 +14,7 @@ type node[T comparable] struct {
 	next *node[T]
 }
 
-type list[T comparable] interface {
+type List[T comparable] interface {
 	// Add adds val to the end of list
 	Add(item T) error
 
@@ -37,6 +37,9 @@ type list[T comparable] interface {
 
 	// Get returns `item` from position `pos`
 	Get(pos int) (*T, error)
+
+	// Get returns the last item of list
+	GetLast() (*T, error)
 
 	// GetPosition returns `pos` of the first `item`
 	GetPosition(item T) (int, error)

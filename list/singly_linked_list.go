@@ -180,6 +180,14 @@ func (l *singlyLinkedList[T]) Get(pos int) (*T, error) {
 	return &dummy.val, nil
 }
 
+func (l *singlyLinkedList[T]) GetLast() (*T, error) {
+	if l.size == 0 {
+		return nil, fmt.Errorf(gocollections.ErrEmpty)
+	}
+
+	return &l.tail.val, nil
+}
+
 func (l *singlyLinkedList[T]) GetPosition(item T) (int, error) {
 	if l.size == 0 {
 		return -1, fmt.Errorf(gocollections.ErrEmpty)

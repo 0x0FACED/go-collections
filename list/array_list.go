@@ -119,6 +119,14 @@ func (a *arrayList[T]) Get(pos int) (*T, error) {
 	return &a.items[pos], nil
 }
 
+func (a *arrayList[T]) GetLast() (*T, error) {
+	if a.size == 0 {
+		return nil, fmt.Errorf(gocollections.ErrEmpty)
+	}
+
+	return &a.items[a.size-1], nil
+}
+
 func (a *arrayList[T]) GetPosition(item T) (int, error) {
 	if a.size == 0 {
 		return -1, fmt.Errorf(gocollections.ErrEmpty)

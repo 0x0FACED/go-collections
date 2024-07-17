@@ -177,6 +177,13 @@ func (d *doublyLinkedList[T]) Get(pos int) (*T, error) {
 	return &d.traverseToPosition(pos).val, nil
 }
 
+func (d *doublyLinkedList[T]) GetLast() (*T, error) {
+	if d.size == 0 {
+		return nil, fmt.Errorf(gocollections.ErrEmpty)
+	}
+	return &d.tail.val, nil
+}
+
 func (d *doublyLinkedList[T]) GetPosition(item T) (int, error) {
 	if d.size == 0 {
 		return -1, fmt.Errorf(gocollections.ErrEmpty)

@@ -282,6 +282,21 @@ func (c *csll[T]) Get(pos int) (*T, error) {
 	return &dummy.val, nil
 }
 
+// GetLast returns the last value of the element of the list.
+//
+// Returns: a pointer to the value and an error if the position is out of bounds or the list is empty.
+//
+// Time Complexity: O(1)
+//
+// Space Complexity: O(1)
+func (c *csll[T]) GetLast() (*T, error) {
+	if c.size == 0 {
+		return nil, fmt.Errorf(gocollections.ErrEmpty)
+	}
+
+	return &c.tail.val, nil
+}
+
 // GetPosition returns the position of the first occurrence of the specified element in the list.
 //
 // Params:
