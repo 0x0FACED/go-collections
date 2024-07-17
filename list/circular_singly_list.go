@@ -24,6 +24,16 @@ func NewCircularSingly[T comparable]() *csll[T] {
 	return &csll[T]{}
 }
 
+// Head returns the head of circular singly linked list.
+func (c *csll[T]) Head() *node[T] {
+	return c.head
+}
+
+// Tail returns the tail of circular singly linked list.
+func (c *csll[T]) Tail() *node[T] {
+	return c.tail
+}
+
 // Add adds a new element to the end of the list.
 //
 // Params:

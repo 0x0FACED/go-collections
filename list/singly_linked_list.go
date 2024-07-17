@@ -18,6 +18,14 @@ func NewSinglyLinked[T comparable]() *singlyLinkedList[T] {
 	return &singlyLinkedList[T]{}
 }
 
+func (l *singlyLinkedList[T]) Head() *node[T] {
+	return l.head
+}
+
+func (l *singlyLinkedList[T]) Tail() *node[T] {
+	return l.tail
+}
+
 func (l *singlyLinkedList[T]) Add(item T) error {
 	node := &node[T]{val: item}
 	if l.size == 0 {

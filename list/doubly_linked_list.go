@@ -18,6 +18,14 @@ func NewDoublyLinked[T comparable]() *doublyLinkedList[T] {
 	return &doublyLinkedList[T]{}
 }
 
+func (d *doublyLinkedList[T]) Head() *dnode[T] {
+	return d.head
+}
+
+func (d *doublyLinkedList[T]) Tail() *dnode[T] {
+	return d.tail
+}
+
 func (d *doublyLinkedList[T]) Add(item T) error {
 	newNode := &dnode[T]{val: item}
 	if d.size == 0 {
