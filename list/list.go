@@ -1,6 +1,6 @@
 package list
 
-// dnode is a dobule node - node with next and prev ptrs
+// dnode is a double node - node with next and prev ptrs
 type dnode[T comparable] struct {
 	val T
 
@@ -8,6 +8,7 @@ type dnode[T comparable] struct {
 	prev *dnode[T]
 }
 
+// node is a struct of list to store val and ptr to next node
 type node[T comparable] struct {
 	val  T
 	next *node[T]
