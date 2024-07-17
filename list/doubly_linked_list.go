@@ -2,6 +2,7 @@ package list
 
 import (
 	"fmt"
+	"reflect"
 
 	gocollections "github.com/0x0FACED/go-collections"
 )
@@ -75,34 +76,130 @@ func (d *doublyLinkedList[T]) RemoveLast() error {
 }
 
 func (d *doublyLinkedList[T]) RemoveVal(item T) (int, error) {
-	panic("not implemented") // TODO: Implement
+	if d.size == 0 {
+		return -1, fmt.Errorf(gocollections.ErrEmpty)
+	}
+
+	if reflect.DeepEqual(d.head.val, item) {
+		d.head = d.head.next
+		d.size--
+		if d.size == 0 {
+			d.tail = nil
+		}
+		return 0, nil
+	}
+
+	dummy := d.head
+	cnt := 0
+	for dummy.next != nil {
+		if reflect.DeepEqual(dummy.next.val, item) {
+			dummy.next = dummy.next.next
+			if dummy.next == nil {
+				d.tail = dummy
+			} else {
+				dummy.next.next.prev = dummy
+			}
+			d.size--
+			return cnt + 1, nil
+		}
+		dummy = dummy.next
+		cnt++
+	}
+
+	return -1, fmt.Errorf(gocollections.ErrNotFound)
 }
 
 func (d *doublyLinkedList[T]) RemoveAt(pos int) error {
-	panic("not implemented") // TODO: Implement
+	if d.size == 0 {
+		return fmt.Errorf(gocollections.ErrEmpty)
+	}
+
+	if pos < 0 || pos > d.size {
+		return fmt.Errorf(gocollections.ErrOutOfBounds)
+	}
+
+	dummy := d.traverseToPosition(pos - 1)
+	dummy.next = dummy.next.next
+	if dummy.next == nil {
+		d.tail = dummy
+	} else {
+		dummy.next.next.prev = dummy
+	}
+	d.size--
+	return nil
+
 }
 
 func (d *doublyLinkedList[T]) Set(item T, pos int) error {
-	panic("not implemented") // TODO: Implement
+	if d.size == 0 {
+		return fmt.Errorf(gocollections.ErrEmpty)
+	}
+
+	if pos < 0 || pos > d.size {
+		return fmt.Errorf(gocollections.ErrOutOfBounds)
+	}
+
+	dummy := d.traverseToPosition(pos)
+	dummy.val = item
+	return nil
 }
 
 func (d *doublyLinkedList[T]) Get(pos int) (*T, error) {
-	panic("not implemented") // TODO: Implement
+	if d.size == 0 {
+		return nil, fmt.Errorf(gocollections.ErrEmpty)
+	}
+
+	if pos < 0 || pos > d.size {
+		return nil, fmt.Errorf(gocollections.ErrOutOfBounds)
+	}
+
+	return &d.traverseToPosition(pos).val, nil
 }
 
 func (d *doublyLinkedList[T]) GetPosition(item T) (int, error) {
-	panic("not implemented") // TODO: Implement
+	if d.size == 0 {
+		return -1, fmt.Errorf(gocollections.ErrEmpty)
+	}
+
+	dummy := d.head
+	cnt := 0
+	for dummy != nil {
+		if reflect.DeepEqual(dummy.val, item) {
+			return cnt, nil
+		}
+		dummy = dummy.next
+		cnt++
+	}
+
+	return -1, fmt.Errorf(gocollections.ErrNotFound)
 }
 
 func (d *doublyLinkedList[T]) Size() int {
-	panic("not implemented") // TODO: Implement
+	return d.size
 }
 
 func (d *doublyLinkedList[T]) Clear() error {
-	panic("not implemented") // TODO: Implement
+	if d.size == 0 {
+		return fmt.Errorf(gocollections.ErrEmpty)
+	}
+	d.head = nil
+	d.tail = nil
+	d.size = 0
+	return nil
 }
 
 func (d *doublyLinkedList[T]) Contains(item T) bool {
+	dummy := d.head
+	for dummy != nil {
+		if reflect.DeepEqual(dummy.val, item) {
+			return true
+		}
+		dummy = dummy.next
+	}
+
+	return false
+}
+
 func (d *doublyLinkedList[T]) traverseToPosition(pos int) *dnode[T] {
 	if pos < 0 {
 		return d.head
