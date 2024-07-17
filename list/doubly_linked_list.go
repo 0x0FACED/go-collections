@@ -40,9 +40,6 @@ func (d *doublyLinkedList[T]) Add(item T) error {
 }
 
 func (d *doublyLinkedList[T]) Insert(item T, pos int) error {
-	if d.size == 0 {
-		return fmt.Errorf(gocollections.ErrEmpty)
-	}
 	if pos < 0 || pos > d.size {
 		return fmt.Errorf(gocollections.ErrOutOfBounds)
 	}
@@ -50,7 +47,9 @@ func (d *doublyLinkedList[T]) Insert(item T, pos int) error {
 	newNode := &dnode[T]{val: item}
 	if pos == 0 {
 		newNode.next = d.head
-		d.head.prev = newNode
+		if d.head != nil {
+			d.head.prev = newNode
+		}
 		d.head = newNode
 		if d.size == 0 {
 			d.tail = newNode
@@ -62,8 +61,13 @@ func (d *doublyLinkedList[T]) Insert(item T, pos int) error {
 	dummy := d.traverseToPosition(pos - 1)
 	newNode.prev = dummy
 	newNode.next = dummy.next
+	if dummy.next != nil {
+		dummy.next.prev = newNode
+	}
 	dummy.next = newNode
-	dummy.next.prev = newNode
+	if pos == d.size {
+		d.tail = newNode
+	}
 	d.size++
 	return nil
 }
@@ -75,6 +79,7 @@ func (d *doublyLinkedList[T]) RemoveLast() error {
 
 	if d.size == 1 {
 		d.head = nil
+		d.tail = nil
 	} else {
 		d.tail = d.tail.prev
 		d.tail.next = nil
@@ -90,25 +95,30 @@ func (d *doublyLinkedList[T]) RemoveVal(item T) (int, error) {
 
 	if reflect.DeepEqual(d.head.val, item) {
 		d.head = d.head.next
-		d.size--
-		if d.size == 0 {
+		if d.head != nil {
+			d.head.prev = nil
+		} else {
 			d.tail = nil
 		}
+		d.size--
 		return 0, nil
 	}
 
 	dummy := d.head
 	cnt := 0
-	for dummy.next != nil {
-		if reflect.DeepEqual(dummy.next.val, item) {
-			dummy.next = dummy.next.next
-			if dummy.next == nil {
-				d.tail = dummy
-			} else {
-				dummy.next.next.prev = dummy
+	for dummy != nil {
+		if reflect.DeepEqual(dummy.val, item) {
+			if dummy.prev != nil {
+				dummy.prev.next = dummy.next
+			}
+			if dummy.next != nil {
+				dummy.next.prev = dummy.prev
+			}
+			if dummy == d.tail {
+				d.tail = dummy.prev
 			}
 			d.size--
-			return cnt + 1, nil
+			return cnt, nil
 		}
 		dummy = dummy.next
 		cnt++
@@ -122,28 +132,35 @@ func (d *doublyLinkedList[T]) RemoveAt(pos int) error {
 		return fmt.Errorf(gocollections.ErrEmpty)
 	}
 
-	if pos < 0 || pos > d.size {
+	if pos < 0 || pos >= d.size {
 		return fmt.Errorf(gocollections.ErrOutOfBounds)
 	}
 
+	if pos == 0 {
+		if d.head.next != nil {
+			d.head = d.head.next
+			d.head.prev = nil
+		} else {
+			d.head = nil
+			d.tail = nil
+		}
+		d.size--
+		return nil
+	}
 	dummy := d.traverseToPosition(pos - 1)
 	dummy.next = dummy.next.next
-	if dummy.next == nil {
-		d.tail = dummy
+	if dummy.next != nil {
+		dummy.next.prev = dummy
 	} else {
-		dummy.next.next.prev = dummy
+		d.tail = dummy
 	}
+
 	d.size--
 	return nil
-
 }
 
 func (d *doublyLinkedList[T]) Set(item T, pos int) error {
-	if d.size == 0 {
-		return fmt.Errorf(gocollections.ErrEmpty)
-	}
-
-	if pos < 0 || pos > d.size {
+	if pos < 0 || pos >= d.size {
 		return fmt.Errorf(gocollections.ErrOutOfBounds)
 	}
 
@@ -153,11 +170,7 @@ func (d *doublyLinkedList[T]) Set(item T, pos int) error {
 }
 
 func (d *doublyLinkedList[T]) Get(pos int) (*T, error) {
-	if d.size == 0 {
-		return nil, fmt.Errorf(gocollections.ErrEmpty)
-	}
-
-	if pos < 0 || pos > d.size {
+	if pos < 0 || pos >= d.size {
 		return nil, fmt.Errorf(gocollections.ErrOutOfBounds)
 	}
 
