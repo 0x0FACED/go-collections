@@ -7,7 +7,9 @@ import (
 	gocollections "github.com/0x0FACED/go-collections"
 )
 
-// Circular Singly Linked List - CSLL
+// Circular Singly Linked List (CSLL) is a linked list where the last node points back to the first node.
+//
+// It supports operations such as adding, inserting, removing, and retrieving elements.
 type csll[T comparable] struct {
 	head *node[T]
 	tail *node[T]
@@ -15,10 +17,23 @@ type csll[T comparable] struct {
 	size int
 }
 
+// NewCircularSingly creates a new, empty circular singly linked list.
+//
+// Returns: pointer to a new csll.
 func NewCircularSingly[T comparable]() *csll[T] {
 	return &csll[T]{}
 }
 
+// Add adds a new element to the end of the list.
+//
+// Params:
+//   - item: the element to add.
+//
+// Returns: an error if the operation fails (in this case, it always returns nil XD).
+//
+// Time Complexity: O(1)
+//
+// # Space Complexity: O(1)
 func (c *csll[T]) Add(item T) error {
 	newNode := &node[T]{val: item}
 	if c.size == 0 {
@@ -34,6 +49,19 @@ func (c *csll[T]) Add(item T) error {
 	return nil
 }
 
+// Insert inserts a new element at the specified position in the list.
+//
+// Params:
+//   - item: the element to insert.
+//   - pos: the zero-based index at which to insert the element.
+//
+// Returns: an error if the position is out of bounds or the list is empty.
+//
+// Time Complexity:
+//  1. Best case (inserting to the head): O(1).
+//  2. Worst case (inserting to specified position or tail): O(n).
+//
+// Space Complexity: O(1)
 func (c *csll[T]) Insert(item T, pos int) error {
 	if c.size == 0 {
 		return fmt.Errorf(gocollections.ErrEmpty)
@@ -64,6 +92,13 @@ func (c *csll[T]) Insert(item T, pos int) error {
 	return nil
 }
 
+// RemoveLast removes the last element from the list.
+//
+// Returns: an error if the list is empty.
+//
+// Time Complexity: O(n)
+//
+// Space Complexity: O(1)
 func (c *csll[T]) RemoveLast() error {
 	if c.size == 0 {
 		return fmt.Errorf(gocollections.ErrEmpty)
@@ -85,6 +120,18 @@ func (c *csll[T]) RemoveLast() error {
 	return nil
 }
 
+// RemoveVal removes the first occurrence of the specified element from the list.
+//
+// Params:
+//   - item: the element to remove.
+//
+// Returns: the position of the removed element and an error if the element is not found or the list is empty.
+//
+// Time Complexity:
+//  1. Best case (inserting to the head): O(1).
+//  2. Worst case (inserting to the tail): O(n).
+//
+// Space Complexity: O(1)
 func (c *csll[T]) RemoveVal(item T) (int, error) {
 	if c.size == 0 {
 		return -1, fmt.Errorf(gocollections.ErrEmpty)
@@ -118,6 +165,16 @@ func (c *csll[T]) RemoveVal(item T) (int, error) {
 	return -1, fmt.Errorf(gocollections.ErrNotFound)
 }
 
+// RemoveAt removes the element at the specified position in the list.
+//
+// Params:
+//   - pos: the zero-based index of the element to remove.
+//
+// Returns: an error if the position is out of bounds or the list is empty.
+//
+// Time Complexity: O(n)
+//
+// Space Complexity: O(1)
 func (c *csll[T]) RemoveAt(pos int) error {
 	if c.size == 0 {
 		return fmt.Errorf(gocollections.ErrEmpty)
@@ -144,10 +201,24 @@ func (c *csll[T]) RemoveAt(pos int) error {
 		cnt++
 	}
 	dummy.next = dummy.next.next
+	if dummy.next == nil {
+		c.tail = dummy
+	}
 	c.size--
 	return nil
 }
 
+// Set sets the value of the element at the specified position in the list.
+//
+// Params:
+//   - item: the new value.
+//   - pos: the zero-based index of the element to set.
+//
+// Returns: an error if the position is out of bounds or the list is empty.
+//
+// Time Complexity: O(n)
+//
+// Space Complexity: O(1)
 func (c *csll[T]) Set(item T, pos int) error {
 	if c.size == 0 {
 		return fmt.Errorf(gocollections.ErrEmpty)
@@ -169,6 +240,16 @@ func (c *csll[T]) Set(item T, pos int) error {
 	return nil
 }
 
+// Get returns the value of the element at the specified position in the list.
+//
+// Params:
+//   - pos: the zero-based index of the element to get.
+//
+// Returns: a pointer to the value and an error if the position is out of bounds or the list is empty.
+//
+// Time Complexity: O(n)
+//
+// Space Complexity: O(1)
 func (c *csll[T]) Get(pos int) (*T, error) {
 	if c.size == 0 {
 		return nil, fmt.Errorf(gocollections.ErrEmpty)
@@ -180,14 +261,27 @@ func (c *csll[T]) Get(pos int) (*T, error) {
 
 	dummy := c.head
 	cnt := 0
-	for cnt != pos-1 {
+	for cnt != pos {
 		dummy = dummy.next
+		if dummy == c.head {
+			return nil, fmt.Errorf(gocollections.ErrNotFound)
+		}
 		cnt++
 	}
 
 	return &dummy.val, nil
 }
 
+// GetPosition returns the position of the first occurrence of the specified element in the list.
+//
+// Params:
+//   - item: the element to search for.
+//
+// Returns: the zero-based index of the element and an error if the element is not found or the list is empty.
+//
+// Time Complexity: O(n)
+//
+// Space Complexity: O(1)
 func (c *csll[T]) GetPosition(item T) (int, error) {
 	if c.size == 0 {
 		return -1, fmt.Errorf(gocollections.ErrEmpty)
@@ -206,27 +300,40 @@ func (c *csll[T]) GetPosition(item T) (int, error) {
 	return -1, fmt.Errorf(gocollections.ErrNotFound)
 }
 
+// Size returns the number of elements in the list.
 func (c *csll[T]) Size() int {
 	return c.size
 }
 
+// Clear removes all elements from the list.
+// Always error == nil
 func (c *csll[T]) Clear() error {
-	c.head.next = nil
 	c.head = nil
 	c.tail = nil
 	c.size = 0
 	return nil
 }
 
+// Contains returns true if the list contains the specified element.
+//
+// Params:
+//   - item: the element to search for.
+//
+// Returns: true if the element is found, false otherwise.
+//
+// Time Complexity: O(n)
+//
+// Space Complexity: O(1)
 func (c *csll[T]) Contains(item T) bool {
 	dummy := c.head
-	cnt := 0
 	for dummy != nil {
 		if reflect.DeepEqual(dummy.val, item) {
 			return true
 		}
 		dummy = dummy.next
-		cnt++
+		if dummy == c.head {
+			return false
+		}
 	}
 
 	return false
