@@ -6,7 +6,7 @@ This library provides implementations of various collection data structures full
 
 - [x] Array List
 - [x] Singly Linked List
-- [ ] _Doubly Linked List **(in progress)**_
+- [x] Doubly Linked List
 - [x] Singly Circular Linked List
 - [ ] Doubly Circular Linked List
 - [ ] Stack
