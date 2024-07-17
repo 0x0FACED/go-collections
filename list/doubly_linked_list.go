@@ -50,12 +50,7 @@ func (d *doublyLinkedList[T]) Insert(item T, pos int) error {
 		return nil
 	}
 
-	dummy := d.head
-	cnt := 0
-	for cnt < pos-1 {
-		dummy = dummy.next
-		cnt++
-	}
+	dummy := d.traverseToPosition(pos - 1)
 	newNode.prev = dummy
 	newNode.next = dummy.next
 	dummy.next = newNode
@@ -108,5 +103,16 @@ func (d *doublyLinkedList[T]) Clear() error {
 }
 
 func (d *doublyLinkedList[T]) Contains(item T) bool {
-	panic("not implemented") // TODO: Implement
+func (d *doublyLinkedList[T]) traverseToPosition(pos int) *dnode[T] {
+	if pos < 0 {
+		return d.head
+	}
+	dummy := d.head
+	cnt := 0
+	for cnt != pos {
+		dummy = dummy.next
+		cnt++
+	}
+
+	return dummy
 }
