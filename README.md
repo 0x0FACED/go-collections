@@ -1,6 +1,6 @@
 # go-collections
 
-This library provides implementations of various collection data structures fully writen in Golang.
+This library provides implementations of various collection data structures fully written in Golang.
 
 ## Data Structures
 
