@@ -8,7 +8,7 @@ This library provides implementations of various collection data structures full
 - [x] Singly Linked List
 - [x] Doubly Linked List
 - [x] Singly Circular Linked List
-- [ ] Doubly Circular Linked List
+- [x] Doubly Circular Linked List
 - [x] Stack (Slice Stack, List Stack)
 - [ ] Queue
 - [ ] Deque (Double-Ended Queue)
