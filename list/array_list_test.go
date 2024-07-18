@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testing"
 
+	gocollections "github.com/0x0FACED/go-collections"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -252,7 +253,7 @@ func TestArrayList_RemoveEmpty(t *testing.T) {
 	list := NewArrayList[int]()
 	err := list.RemoveLast()
 	assert.Error(t, err)
-	assert.Equal(t, "list is empty", err.Error())
+	assert.Equal(t, gocollections.ErrEmpty, err.Error())
 }
 
 func comparePersonByName(a, b Person) bool {
