@@ -9,8 +9,16 @@ This library provides implementations of various collection data structures full
 - [x] Doubly Linked List
 - [x] Singly Circular Linked List
 - [x] Doubly Circular Linked List
-- [x] Stack (Slice Stack, List Stack)
-- [ ] Queue
+- [x] Stack:
+    - [x] Slice Stack
+    - [x] List Stack
+- [x] Queue:
+    - [x] Slice Queue
+    - [x] Dynamic Slice Queue
+    - [x] List Queue
+    - [x] Dynamic List Queue
+    - [ ] Stack Queue
+    - [ ] Double Stack Queue
 - [ ] Deque (Double-Ended Queue)
 - [ ] Priority Queue
 - [ ] Binary Search Tree (BST)
