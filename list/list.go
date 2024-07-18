@@ -14,6 +14,7 @@ type node[T comparable] struct {
 	next *node[T]
 }
 
+// Common List interface with common operations
 type List[T comparable] interface {
 	// Add adds val to the end of list
 	Add(item T) error
@@ -52,4 +53,17 @@ type List[T comparable] interface {
 
 	// Contains check if the `item` exists in list and returns true. Returns false if not.
 	Contains(item T) bool
+}
+
+// Common List with List operations but includes Sort operation
+type ListSort[T comparable] interface {
+	List[T]
+	sorter[T]
+}
+
+// Interface for lists with Sort operation
+// cant use without List
+type sorter[T comparable] interface {
+	// Sort sorts list with unique compare method written by user
+	Sort(compare Comparator[T], sortType int) error
 }
