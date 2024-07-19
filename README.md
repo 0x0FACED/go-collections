@@ -17,11 +17,10 @@ This library provides implementations of various collection data structures full
     - [x] Dynamic Slice Queue
     - [x] List Queue
     - [x] Dynamic List Queue
-    - [ ] Stack Queue
-    - [ ] Double Stack Queue
+    - [x] Stack Queue (Two stacks)
 - [ ] Deque (Double-Ended Queue)
 - [ ] Priority Queue
-- [ ] Binary Search Tree (BST)
+- [ ] Binary Search Tree (BST) **(In Progress)**
 - [ ] AVL Tree
 - [ ] Red-Black Tree
 - [ ] B-Tree
