@@ -20,9 +20,9 @@ This library provides implementations of various collection data structures full
     - [x] Stack Queue (Two stacks)
 - [ ] Deque (Double-Ended Queue)
 - [ ] Priority Queue
-- [ ] Binary Search Tree (BST) **(In Progress)**
+- [x] Binary Search Tree (BST)
 - [ ] AVL Tree
-- [ ] Red-Black Tree
+- [ ] Red-Black Tree **(In Progress)**
 - [ ] B-Tree
 - [ ] Trie
 - [ ] Heap (Min-Heap, Max-Heap)
