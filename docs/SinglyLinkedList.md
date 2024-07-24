@@ -12,4 +12,4 @@ This document contains all the necessary information about the Singly-Linked Lis
 
 **Singly-Linked List** - the simplest type of `Linked List`, where each node contains some data and a reference to the next `node`. They can only be traversed in a single direction - from the head (the first node) to the tail (the last node) - that's why this data structure called Singly-Linked List.
 
-![Singly-Linked List](./images/singly_linked_list.svg)
+![Singly-Linked List](./images/singly_linked_list_g.svg)
