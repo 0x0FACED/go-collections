@@ -84,7 +84,7 @@ func (l *singlyLinkedList[T]) RemoveLast() error {
 	}
 	// 1 3 5 7 8 9 <- before removing
 	// 1 3 5 7 8 <- must be after
-	// traverse to size-1 pos -> 1 3 5 7 [8] 9
+	// traverse to size-2 pos -> 1 3 5 7 [8] 9
 	//
 	l.tail = dummy
 	dummy.next = nil
