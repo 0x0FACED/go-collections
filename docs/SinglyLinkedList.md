@@ -16,6 +16,8 @@ This data structure, methods of insertion, deletion, search, and others are desc
     - [Searching](#searching)
     - [Traversal](#traversal)
     - [Size](#size)
+- [Implementation of SLL in Golang](#implementation)
+- [Usage](#usage)
 
 ## Description
 
@@ -200,3 +202,99 @@ Algorithm:
 1. `dummy = head`, `counter = 0`
 2. Traverse to `tail` of list, `counter++`
 3. `Return counter + 1`
+
+## Implementation
+
+This implementation is written entirely in the Golang language without using third-party libraries.
+
+_TODO: add threadsafe_
+
+Interfaces and auxiliary structures are described in the file [list.go](/list/list.go). After going to it, you can read the comments near the method signatures to understand what they do
+
+We are interested in the following structures and interfaces:
+```go
+// node is a struct of list to store val and ptr to next node
+type node[T comparable] struct {
+	val  T
+	next *node[T]
+}
+
+// Common List interface with common operations
+type List[T comparable] interface {
+	Add(item T) error
+	Insert(item T, pos int) error
+	RemoveLast() error
+	RemoveVal(item T) (int, error)
+	RemoveAt(pos int) error
+	Set(item T, pos int) error
+	Get(pos int) (*T, error)
+	GetLast() (*T, error)
+	GetPosition(item T) (int, error)
+	Size() int
+	Clear() error
+	Contains(item T) bool
+}
+```
+
+You can see that generics are used. This is necessary so that the structure can store data of any type, however, unlike using `interface{}` as a data type, generics allow you to make typing strict. That is, you cannot store an `int` and a `string` in one instance of the structure. You can read more about generics in Golang here:
+
+[Introduction to Generics in Golang](https://go.dev/doc/tutorial/generics)
+
+It is recommended to use interfaces to declare variables and further initialize them using functions. We can find implementations of the **SLL** operations in this file: [singly_linked_list.go](/list/singly_linked_list.go)
+
+It is worth noting that this implementation in its structure contains, in addition to head and tail, also size. This is necessary in order not to constantly go through the list and for some facilitating conditions.
+
+## Usage
+
+```go
+package main
+
+import (
+	"fmt"
+
+	"github.com/0x0FACED/go-collections/list"
+)
+
+func main() {
+	var sll list.List[int]
+	sll = list.NewSinglyLinked[int]()
+
+	sll.Add(1)
+	sll.Add(2)
+	sll.Add(3)
+	sll.Add(4)
+
+	val, err := sll.Get(0)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Print(*val, " ") // Output: 1
+
+	val, err = sll.Get(2)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Print(*val, " ") // Output: 3
+
+	sll.Insert(15, 2)
+	sll.Insert(50, 0)
+
+	val, err = sll.Get(0)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Print(*val, " ") // Output: 50
+
+	val, err = sll.Get(3)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(*val, " ") // Output: 15
+}
+
+```
+
