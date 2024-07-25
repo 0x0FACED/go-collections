@@ -131,6 +131,20 @@ func (rbt *rbt[T]) rotateRight(y *rbt_node[T]) {
 	y.parent = x
 }
 
+func (rbt *rbt[T]) searchHelper(curr *rbt_node[T], item T) *rbt_node[T] {
+	dummy := curr
+	for dummy != nil {
+		if rbt.compare(item, dummy.val) < 0 {
+			dummy = dummy.left
+		} else if rbt.compare(item, dummy.val) > 0 {
+			dummy = dummy.right
+		} else {
+			return dummy
+		}
+	}
+	return nil
+}
+
 func (rbt *rbt[T]) inOrderHelper(curr *rbt_node[T], items *[]T) {
 	if curr == nil {
 		return
