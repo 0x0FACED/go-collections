@@ -14,8 +14,31 @@ type node[T comparable] struct {
 	next *node[T]
 }
 
+// Default interface to all lists EXPECT ArrayList
+//
+// ArrayList doesn't have Head and Tail, but have sort methods
+//
+// .To declare ArrayList use the ListSort interface
+//
+// example:
+//
+//	var arrayList *list.ListSort[int]
+//
+// There are MutableList methods:
+type MutableList[T comparable] interface {
+	headTail[T]
+	List[T]
+}
+
+type headTail[T comparable] interface {
+	Head() *node[T]
+
+	Tail() *node[T]
+}
+
 // Common List interface with common operations
 type List[T comparable] interface {
+
 	// Add adds val to the end of list
 	Add(item T) error
 
@@ -62,7 +85,7 @@ type ListSort[T comparable] interface {
 }
 
 // Interface for lists with Sort operation
-// cant use without List
+// cant use without List intfc
 type sorter[T comparable] interface {
 	// Sort sorts list with unique compare method written by user
 	Sort(compare Comparator[T], sortType int) error
