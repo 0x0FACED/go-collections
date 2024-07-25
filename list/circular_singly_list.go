@@ -3,6 +3,7 @@ package list
 import (
 	"fmt"
 	"reflect"
+	"sync"
 
 	gocollections "github.com/0x0FACED/go-collections"
 )
@@ -15,6 +16,8 @@ type csll[T comparable] struct {
 	tail *node[T]
 
 	size int
+
+	mu sync.Mutex
 }
 
 // NewCircularSingly creates a new, empty circular singly linked list.
@@ -45,6 +48,9 @@ func (c *csll[T]) Tail() *node[T] {
 //
 // # Space Complexity: O(1)
 func (c *csll[T]) Add(item T) error {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
 	newNode := &node[T]{val: item}
 	if c.size == 0 {
 		c.head = newNode
@@ -73,6 +79,9 @@ func (c *csll[T]) Add(item T) error {
 //
 // Space Complexity: O(1)
 func (c *csll[T]) Insert(item T, pos int) error {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
 	if c.size == 0 {
 		return fmt.Errorf(gocollections.ErrEmpty)
 	}
@@ -110,6 +119,9 @@ func (c *csll[T]) Insert(item T, pos int) error {
 //
 // Space Complexity: O(1)
 func (c *csll[T]) RemoveLast() error {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
 	if c.size == 0 {
 		return fmt.Errorf(gocollections.ErrEmpty)
 	}
@@ -143,6 +155,9 @@ func (c *csll[T]) RemoveLast() error {
 //
 // Space Complexity: O(1)
 func (c *csll[T]) RemoveVal(item T) (int, error) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
 	if c.size == 0 {
 		return -1, fmt.Errorf(gocollections.ErrEmpty)
 	}
@@ -186,6 +201,9 @@ func (c *csll[T]) RemoveVal(item T) (int, error) {
 //
 // Space Complexity: O(1)
 func (c *csll[T]) RemoveAt(pos int) error {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
 	if c.size == 0 {
 		return fmt.Errorf(gocollections.ErrEmpty)
 	}
@@ -230,6 +248,9 @@ func (c *csll[T]) RemoveAt(pos int) error {
 //
 // Space Complexity: O(1)
 func (c *csll[T]) Set(item T, pos int) error {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
 	if c.size == 0 {
 		return fmt.Errorf(gocollections.ErrEmpty)
 	}
@@ -261,6 +282,9 @@ func (c *csll[T]) Set(item T, pos int) error {
 //
 // Space Complexity: O(1)
 func (c *csll[T]) Get(pos int) (*T, error) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
 	if c.size == 0 {
 		return nil, fmt.Errorf(gocollections.ErrEmpty)
 	}
@@ -290,6 +314,9 @@ func (c *csll[T]) Get(pos int) (*T, error) {
 //
 // Space Complexity: O(1)
 func (c *csll[T]) GetLast() (*T, error) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
 	if c.size == 0 {
 		return nil, fmt.Errorf(gocollections.ErrEmpty)
 	}
@@ -308,6 +335,9 @@ func (c *csll[T]) GetLast() (*T, error) {
 //
 // Space Complexity: O(1)
 func (c *csll[T]) GetPosition(item T) (int, error) {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
 	if c.size == 0 {
 		return -1, fmt.Errorf(gocollections.ErrEmpty)
 	}
@@ -350,6 +380,9 @@ func (c *csll[T]) Clear() error {
 //
 // Space Complexity: O(1)
 func (c *csll[T]) Contains(item T) bool {
+	c.mu.Lock()
+	defer c.mu.Unlock()
+
 	dummy := c.head
 	for dummy != nil {
 		if reflect.DeepEqual(dummy.val, item) {

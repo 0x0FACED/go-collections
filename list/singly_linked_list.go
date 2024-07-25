@@ -3,6 +3,7 @@ package list
 import (
 	"fmt"
 	"reflect"
+	"sync"
 
 	gocollections "github.com/0x0FACED/go-collections"
 )
@@ -12,6 +13,8 @@ type singlyLinkedList[T comparable] struct {
 	tail *node[T]
 
 	size int
+
+	mu sync.Mutex
 }
 
 func NewSinglyLinked[T comparable]() *singlyLinkedList[T] {
@@ -27,6 +30,9 @@ func (l *singlyLinkedList[T]) Tail() *node[T] {
 }
 
 func (l *singlyLinkedList[T]) Add(item T) error {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+
 	node := &node[T]{val: item}
 	if l.size == 0 {
 		l.head = node
@@ -40,6 +46,9 @@ func (l *singlyLinkedList[T]) Add(item T) error {
 }
 
 func (l *singlyLinkedList[T]) Insert(item T, pos int) error {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+
 	if l.size == 0 {
 		return l.Add(item)
 	}
@@ -68,6 +77,9 @@ func (l *singlyLinkedList[T]) Insert(item T, pos int) error {
 }
 
 func (l *singlyLinkedList[T]) RemoveLast() error {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+
 	if l.size == 0 {
 		return fmt.Errorf(gocollections.ErrEmpty)
 	}
@@ -93,6 +105,9 @@ func (l *singlyLinkedList[T]) RemoveLast() error {
 }
 
 func (l *singlyLinkedList[T]) RemoveVal(item T) (int, error) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+
 	if l.size == 0 {
 		return -1, fmt.Errorf(gocollections.ErrEmpty)
 	}
@@ -124,6 +139,9 @@ func (l *singlyLinkedList[T]) RemoveVal(item T) (int, error) {
 }
 
 func (l *singlyLinkedList[T]) RemoveAt(pos int) error {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+
 	if l.size == 0 {
 		return fmt.Errorf(gocollections.ErrEmpty)
 	}
@@ -144,6 +162,9 @@ func (l *singlyLinkedList[T]) RemoveAt(pos int) error {
 }
 
 func (l *singlyLinkedList[T]) Set(item T, pos int) error {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+
 	if l.size == 0 {
 		return fmt.Errorf(gocollections.ErrEmpty)
 	}
@@ -163,6 +184,9 @@ func (l *singlyLinkedList[T]) Set(item T, pos int) error {
 }
 
 func (l *singlyLinkedList[T]) Get(pos int) (*T, error) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+
 	if l.size == 0 {
 		return nil, fmt.Errorf(gocollections.ErrEmpty)
 	}
@@ -181,6 +205,9 @@ func (l *singlyLinkedList[T]) Get(pos int) (*T, error) {
 }
 
 func (l *singlyLinkedList[T]) GetLast() (*T, error) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+
 	if l.size == 0 {
 		return nil, fmt.Errorf(gocollections.ErrEmpty)
 	}
@@ -189,6 +216,9 @@ func (l *singlyLinkedList[T]) GetLast() (*T, error) {
 }
 
 func (l *singlyLinkedList[T]) GetPosition(item T) (int, error) {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+
 	if l.size == 0 {
 		return -1, fmt.Errorf(gocollections.ErrEmpty)
 	}
@@ -216,6 +246,9 @@ func (l *singlyLinkedList[T]) Clear() error {
 }
 
 func (l *singlyLinkedList[T]) Print() {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+
 	fmt.Println("size:", l.size)
 	fmt.Println("data:")
 	dummy := l.head
@@ -231,6 +264,9 @@ func (l *singlyLinkedList[T]) Print() {
 }
 
 func (l *singlyLinkedList[T]) Contains(item T) bool {
+	l.mu.Lock()
+	defer l.mu.Unlock()
+
 	if l.size == 0 {
 		return false
 	}

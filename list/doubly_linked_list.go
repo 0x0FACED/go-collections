@@ -3,6 +3,7 @@ package list
 import (
 	"fmt"
 	"reflect"
+	"sync"
 
 	gocollections "github.com/0x0FACED/go-collections"
 )
@@ -12,6 +13,8 @@ type doublyLinkedList[T comparable] struct {
 	tail *dnode[T]
 
 	size int
+
+	mu sync.Mutex
 }
 
 func NewDoublyLinked[T comparable]() *doublyLinkedList[T] {
@@ -27,6 +30,9 @@ func (d *doublyLinkedList[T]) Tail() *dnode[T] {
 }
 
 func (d *doublyLinkedList[T]) Add(item T) error {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+
 	newNode := &dnode[T]{val: item}
 	if d.size == 0 {
 		d.head = newNode
@@ -40,6 +46,9 @@ func (d *doublyLinkedList[T]) Add(item T) error {
 }
 
 func (d *doublyLinkedList[T]) Insert(item T, pos int) error {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+
 	if pos < 0 || pos > d.size {
 		return fmt.Errorf(gocollections.ErrOutOfBounds)
 	}
@@ -73,6 +82,9 @@ func (d *doublyLinkedList[T]) Insert(item T, pos int) error {
 }
 
 func (d *doublyLinkedList[T]) RemoveLast() error {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+
 	if d.size == 0 {
 		return fmt.Errorf(gocollections.ErrEmpty)
 	}
@@ -89,6 +101,9 @@ func (d *doublyLinkedList[T]) RemoveLast() error {
 }
 
 func (d *doublyLinkedList[T]) RemoveVal(item T) (int, error) {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+
 	if d.size == 0 {
 		return -1, fmt.Errorf(gocollections.ErrEmpty)
 	}
@@ -128,6 +143,9 @@ func (d *doublyLinkedList[T]) RemoveVal(item T) (int, error) {
 }
 
 func (d *doublyLinkedList[T]) RemoveAt(pos int) error {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+
 	if d.size == 0 {
 		return fmt.Errorf(gocollections.ErrEmpty)
 	}
@@ -160,6 +178,9 @@ func (d *doublyLinkedList[T]) RemoveAt(pos int) error {
 }
 
 func (d *doublyLinkedList[T]) Set(item T, pos int) error {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+
 	if pos < 0 || pos >= d.size {
 		return fmt.Errorf(gocollections.ErrOutOfBounds)
 	}
@@ -170,6 +191,9 @@ func (d *doublyLinkedList[T]) Set(item T, pos int) error {
 }
 
 func (d *doublyLinkedList[T]) Get(pos int) (*T, error) {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+
 	if pos < 0 || pos >= d.size {
 		return nil, fmt.Errorf(gocollections.ErrOutOfBounds)
 	}
@@ -178,6 +202,9 @@ func (d *doublyLinkedList[T]) Get(pos int) (*T, error) {
 }
 
 func (d *doublyLinkedList[T]) GetLast() (*T, error) {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+
 	if d.size == 0 {
 		return nil, fmt.Errorf(gocollections.ErrEmpty)
 	}
@@ -185,6 +212,9 @@ func (d *doublyLinkedList[T]) GetLast() (*T, error) {
 }
 
 func (d *doublyLinkedList[T]) GetPosition(item T) (int, error) {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+
 	if d.size == 0 {
 		return -1, fmt.Errorf(gocollections.ErrEmpty)
 	}
@@ -217,6 +247,9 @@ func (d *doublyLinkedList[T]) Clear() error {
 }
 
 func (d *doublyLinkedList[T]) Contains(item T) bool {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+
 	dummy := d.head
 	for dummy != nil {
 		if reflect.DeepEqual(dummy.val, item) {

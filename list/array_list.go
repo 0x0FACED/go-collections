@@ -3,6 +3,7 @@ package list
 import (
 	"fmt"
 	"reflect"
+	"sync"
 
 	gocollections "github.com/0x0FACED/go-collections"
 )
@@ -15,6 +16,8 @@ type arrayList[T comparable] struct {
 	size        int
 	cap         int
 	scaleFactor float64
+
+	mu sync.Mutex
 }
 
 func NewArrayList[T comparable]() *arrayList[T] {
@@ -27,6 +30,9 @@ func NewArrayList[T comparable]() *arrayList[T] {
 }
 
 func (a *arrayList[T]) Add(item T) error {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+
 	if a.size >= int(float64(a.cap)*a.scaleFactor) {
 		a.resizeArray()
 	}
@@ -37,6 +43,9 @@ func (a *arrayList[T]) Add(item T) error {
 }
 
 func (a *arrayList[T]) Insert(item T, pos int) error {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+
 	if pos < 0 || pos >= a.size {
 		return fmt.Errorf(gocollections.ErrOutOfBounds)
 	}
@@ -53,6 +62,9 @@ func (a *arrayList[T]) Insert(item T, pos int) error {
 }
 
 func (a *arrayList[T]) RemoveLast() error {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+
 	if a.size == 0 {
 		return fmt.Errorf(gocollections.ErrEmpty)
 	}
@@ -62,6 +74,9 @@ func (a *arrayList[T]) RemoveLast() error {
 }
 
 func (a *arrayList[T]) RemoveVal(item T) (int, error) {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+
 	if a.size == 0 {
 		return -1, fmt.Errorf(gocollections.ErrEmpty)
 	}
@@ -80,6 +95,11 @@ func (a *arrayList[T]) RemoveVal(item T) (int, error) {
 }
 
 func (a *arrayList[T]) RemoveAt(pos int) error {
+	res := a.mu.TryLock()
+	if res {
+		defer a.mu.Unlock()
+	}
+
 	if a.size == 0 {
 		return fmt.Errorf(gocollections.ErrEmpty)
 	}
@@ -95,6 +115,9 @@ func (a *arrayList[T]) RemoveAt(pos int) error {
 }
 
 func (a *arrayList[T]) Set(item T, pos int) error {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+
 	if a.size == 0 {
 		return fmt.Errorf(gocollections.ErrEmpty)
 	}
@@ -108,6 +131,9 @@ func (a *arrayList[T]) Set(item T, pos int) error {
 }
 
 func (a *arrayList[T]) Get(pos int) (*T, error) {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+
 	if a.size == 0 {
 		return nil, fmt.Errorf(gocollections.ErrEmpty)
 	}
@@ -120,6 +146,9 @@ func (a *arrayList[T]) Get(pos int) (*T, error) {
 }
 
 func (a *arrayList[T]) GetLast() (*T, error) {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+
 	if a.size == 0 {
 		return nil, fmt.Errorf(gocollections.ErrEmpty)
 	}
@@ -128,6 +157,9 @@ func (a *arrayList[T]) GetLast() (*T, error) {
 }
 
 func (a *arrayList[T]) GetPosition(item T) (int, error) {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+
 	if a.size == 0 {
 		return -1, fmt.Errorf(gocollections.ErrEmpty)
 	}
@@ -155,6 +187,9 @@ func (a *arrayList[T]) Clear() error {
 }
 
 func (a *arrayList[T]) Contains(item T) bool {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+
 	if pos, err := a.findFirst(item); pos != -1 && err == nil {
 		return true
 	}
@@ -163,6 +198,9 @@ func (a *arrayList[T]) Contains(item T) bool {
 }
 
 func (a *arrayList[T]) Sort(compare Comparator[T], sortType int) error {
+	a.mu.Lock()
+	defer a.mu.Unlock()
+
 	if a.size == 0 {
 		return fmt.Errorf(gocollections.ErrEmpty)
 	}
@@ -183,6 +221,11 @@ func (a *arrayList[T]) Sort(compare Comparator[T], sortType int) error {
 }
 
 func (a *arrayList[T]) resizeArray() {
+	res := a.mu.TryLock()
+	if res {
+		defer a.mu.Unlock()
+	}
+
 	newCap := int(float64(a.cap) * 1.5)
 	newItems := make([]T, newCap)
 	copy(newItems, a.items)
@@ -191,6 +234,10 @@ func (a *arrayList[T]) resizeArray() {
 }
 
 func (a *arrayList[T]) findFirst(item T) (int, error) {
+	res := a.mu.TryLock()
+	if res {
+		defer a.mu.Unlock()
+	}
 	for i, el := range a.items {
 		if reflect.DeepEqual(el, item) {
 			return i, nil

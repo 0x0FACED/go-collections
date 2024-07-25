@@ -3,6 +3,7 @@ package list
 import (
 	"fmt"
 	"reflect"
+	"sync"
 
 	gocollections "github.com/0x0FACED/go-collections"
 )
@@ -13,9 +14,19 @@ type cdll[T comparable] struct {
 	tail *dnode[T]
 
 	size int
+
+	mu sync.Mutex
+}
+
+// CDLL - Doubly Circular Linked List
+func NewCDLL[T comparable]() *cdll[T] {
+	return &cdll[T]{}
 }
 
 func (d *cdll[T]) Add(item T) error {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+
 	newNode := &dnode[T]{val: item}
 	if d.size == 0 {
 		d.head = newNode
@@ -35,6 +46,9 @@ func (d *cdll[T]) Add(item T) error {
 }
 
 func (d *cdll[T]) Insert(item T, pos int) error {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+
 	if d.size == 0 {
 		return fmt.Errorf(gocollections.ErrEmpty)
 	}
@@ -63,6 +77,9 @@ func (d *cdll[T]) Insert(item T, pos int) error {
 }
 
 func (d *cdll[T]) RemoveLast() error {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+
 	if d.size == 0 {
 		return fmt.Errorf(gocollections.ErrEmpty)
 	}
@@ -75,6 +92,9 @@ func (d *cdll[T]) RemoveLast() error {
 }
 
 func (d *cdll[T]) RemoveVal(item T) (int, error) {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+
 	if d.size == 0 {
 		return -1, fmt.Errorf(gocollections.ErrEmpty)
 	}
@@ -118,6 +138,9 @@ func (d *cdll[T]) RemoveVal(item T) (int, error) {
 }
 
 func (d *cdll[T]) RemoveAt(pos int) error {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+
 	if d.size == 0 {
 		return fmt.Errorf(gocollections.ErrEmpty)
 	}
@@ -151,6 +174,9 @@ func (d *cdll[T]) RemoveAt(pos int) error {
 }
 
 func (d *cdll[T]) Set(item T, pos int) error {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+
 	if d.size == 0 {
 		return fmt.Errorf(gocollections.ErrEmpty)
 	}
@@ -165,6 +191,9 @@ func (d *cdll[T]) Set(item T, pos int) error {
 }
 
 func (d *cdll[T]) Get(pos int) (*T, error) {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+
 	if d.size == 0 {
 		return nil, fmt.Errorf(gocollections.ErrEmpty)
 	}
@@ -178,6 +207,9 @@ func (d *cdll[T]) Get(pos int) (*T, error) {
 }
 
 func (d *cdll[T]) GetLast() (*T, error) {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+
 	if d.size == 0 {
 		return nil, fmt.Errorf(gocollections.ErrEmpty)
 	}
@@ -186,6 +218,9 @@ func (d *cdll[T]) GetLast() (*T, error) {
 }
 
 func (d *cdll[T]) GetPosition(item T) (int, error) {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+
 	if d.size == 0 {
 		return -1, fmt.Errorf(gocollections.ErrEmpty)
 	}
@@ -218,6 +253,9 @@ func (d *cdll[T]) Clear() error {
 }
 
 func (d *cdll[T]) Contains(item T) bool {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+
 	if d.size == 0 {
 		return false
 	}
