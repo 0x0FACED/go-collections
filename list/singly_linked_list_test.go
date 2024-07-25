@@ -35,6 +35,15 @@ func TestSinglyLinkedList_Insert(t *testing.T) {
 	list.Print()
 }
 
+func TestSinglyLinkedList_Threadsafe(t *testing.T) {
+	list := NewSinglyLinked[int]()
+	for i := 0; i < 10000000; i++ {
+		go func() {
+			list.Add(i)
+		}()
+	}
+}
+
 func TestSinglyLinkedList_Remove(t *testing.T) {
 	list := NewSinglyLinked[int]()
 
