@@ -2,7 +2,7 @@ package trees
 
 import "fmt"
 
-func (rbt *rbt[T]) insertHelper(curr *rbt_node[T], item T, prev *rbt_node[T]) *rbt_node[T] {
+func (rbt *rbt[T]) insertHelper(curr *rbt_node[T], item T) *rbt_node[T] {
 	newNode := &rbt_node[T]{val: item, clr: red}
 
 	if rbt.root == nil {
@@ -129,6 +129,122 @@ func (rbt *rbt[T]) rotateRight(y *rbt_node[T]) {
 	}
 	x.right = y
 	y.parent = x
+}
+
+func (rbt *rbt[T]) deleteHelper(node *rbt_node[T]) {
+	y := node
+	y_original_clr := y.clr
+	var x *rbt_node[T]
+	if node.left == nil {
+		x = node.right
+		rbt.transplant(node, node.right)
+	} else if node.right == nil {
+		x = node.left
+		rbt.transplant(node, node.left)
+	} else {
+		y = rbt.findMin(node.right)
+		y_original_clr = y.clr
+		x = y.right
+		if y.parent == node {
+			if x != nil {
+				x.parent = y
+			}
+		} else {
+			rbt.transplant(y, y.right)
+			y.right = node.right
+			y.right.parent = y
+		}
+		rbt.transplant(node, y)
+		y.left = node.left
+		y.left.parent = y
+		y.clr = node.clr
+	}
+	if y_original_clr == black {
+		rbt.fixDelete(x)
+	}
+}
+
+// find the in-order successor
+func (rbt *rbt[T]) findMin(node *rbt_node[T]) *rbt_node[T] {
+	dummy := node
+	for dummy.left != nil {
+		dummy = dummy.left
+	}
+	return dummy
+}
+
+func (rbt *rbt[T]) transplant(u, v *rbt_node[T]) {
+	if u.parent == nil {
+		rbt.root = v
+	} else if u == u.parent.left {
+		u.parent.left = v
+	} else {
+		u.parent.right = v
+	}
+	if v != nil {
+		v.parent = u.parent
+	}
+}
+
+func (rbt *rbt[T]) fixDelete(x *rbt_node[T]) {
+	for x != rbt.root && (x != nil && x.clr == black) {
+		if x == x.parent.left {
+			w := x.parent.right
+			if w.clr == red {
+				w.clr = black
+				x.parent.clr = red
+				rbt.rotateLeft(x.parent)
+				w = x.parent.right
+			}
+			if (w.left == nil || w.left.clr == black) && (w.right == nil || w.right.clr == black) {
+				w.clr = red
+				x = x.parent
+			} else {
+				if w.right == nil || w.right.clr == black {
+					w.left.clr = black
+					w.clr = red
+					rbt.rotateRight(w)
+					w = x.parent.right
+				}
+				w.clr = x.parent.clr
+				x.parent.clr = black
+				if w.right != nil {
+					w.right.clr = black
+				}
+				rbt.rotateLeft(x.parent)
+				x = rbt.root
+			}
+		} else {
+			w := x.parent.left
+			if w.clr == red {
+				w.clr = black
+				x.parent.clr = red
+				rbt.rotateRight(x.parent)
+				w = x.parent.left
+			}
+			if (w.left == nil || w.left.clr == black) && (w.right == nil || w.right.clr == black) {
+				w.clr = red
+				x = x.parent
+			} else {
+				if w.left == nil || w.left.clr == black {
+					w.right.clr = black
+					w.clr = red
+					rbt.rotateLeft(w)
+					w = x.parent.left
+				}
+				w.clr = x.parent.clr
+				x.parent.clr = black
+				if w.left != nil {
+					w.left.clr = black
+				}
+				rbt.rotateRight(x.parent)
+				x = rbt.root
+			}
+		}
+	}
+	if x != nil {
+		x.clr = black
+	}
 }
 
 func (rbt *rbt[T]) searchHelper(curr *rbt_node[T], item T) *rbt_node[T] {
