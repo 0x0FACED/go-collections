@@ -18,13 +18,25 @@ var compare = func(a, b int) int {
 func TestRBT_Insert(t *testing.T) {
 	tr := NewRBT[int](compare)
 
-	tr.Insert(10)
-	tr.Insert(9)
-	tr.Insert(8)
-	tr.Insert(7)
-	tr.Insert(6)
-	tr.Insert(3)
-	tr.Insert(15)
+	tr.Insert(100)
+	tr.Insert(99)
+	tr.Insert(98)
+	tr.Insert(97)
+	tr.Insert(96)
+	tr.Insert(95)
+	tr.Insert(94)
+	fmt.Println(tr.root.val)
+	fmt.Println(tr.root.right.val)
+	fmt.Println(tr.root.left.val)
+	tr.Insert(93)
+	fmt.Println()
+	fmt.Println()
+	fmt.Println(tr.InOrder())
+	fmt.Println(tr.root.val)
+	fmt.Println(tr.root.left.val)
+	fmt.Println(tr.root.right.val)
+}
+
 	fmt.Println(tr.root.right.val)
 	tr.Insert(11)
 
