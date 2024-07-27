@@ -241,71 +241,81 @@ func (rbt *rbt[T]) findMinRight(node *rbt_node[T]) *rbt_node[T] {
 	return dummy
 }
 
-func (rbt *rbt[T]) transplant(u, v *rbt_node[T]) {
-	if u.parent == nil {
-		rbt.root = v
-	} else if u == u.parent.left {
-		u.parent.left = v
-	} else {
-		u.parent.right = v
-	}
-	if v != nil {
-		v.parent = u.parent
-	}
-}
-
-func (rbt *rbt[T]) fixDelete(x *rbt_node[T]) {
-	for x != rbt.root && (x != nil && x.clr == black) {
-		if x == x.parent.left {
-			w := x.parent.right
-			if w.clr == red {
-				w.clr = black
-				x.parent.clr = red
-				rbt.rotateLeft(x.parent)
-				w = x.parent.right
+// This method is used to RESTORE RBT props that may be broken
+// when and element is deleted.
+//
+// Params:
+//  1. x -> node
+//  2. parent == x.parent (his parent)
+func (rbt *rbt[T]) fixDelete(x, parent *rbt_node[T]) {
+	// while x != root AND (x == nil OR x.color == black)
+	for x != rbt.root && (x == nil || x.clr == black) {
+		// If x is the x == child of parent from left
+		if x == parent.left {
+			// s -> x's brother
+			s := parent.right
+			// if brother's color is red
+			if s.clr == red {
+				// change colors
+				s.clr = black
+				parent.clr = red
+				// call rotate left for parent
+				rbt.rotateLeft(parent)
+				s = parent.right
 			}
-			if (w.left == nil || w.left.clr == black) && (w.right == nil || w.right.clr == black) {
-				w.clr = red
-				x = x.parent
+			// if children of s are both BLACK
+			if (s.left == nil || s.left.clr == black) && (s.right == nil || s.right.clr == black) {
+				// make s red
+				s.clr = red
+				// move up
+				x = parent
+				parent = x.parent
 			} else {
-				if w.right == nil || w.right.clr == black {
-					w.left.clr = black
-					w.clr = red
-					rbt.rotateRight(w)
-					w = x.parent.right
+				// if s.left is black and s.right is red
+				if s.right == nil || s.right.clr == black {
+					if s.left != nil {
+						s.left.clr = black
+					}
+					// make s red and do rotate right
+					s.clr = red
+					rbt.rotateRight(s)
+					s = parent.right
 				}
-				w.clr = x.parent.clr
-				x.parent.clr = black
-				if w.right != nil {
-					w.right.clr = black
+				s.clr = parent.clr
+				parent.clr = black
+				if s.right != nil {
+					s.right.clr = black
 				}
-				rbt.rotateLeft(x.parent)
+				rbt.rotateLeft(parent)
 				x = rbt.root
 			}
-		} else {
-			w := x.parent.left
-			if w.clr == red {
-				w.clr = black
-				x.parent.clr = red
-				rbt.rotateRight(x.parent)
-				w = x.parent.left
+		} else { // if x child of parent.right
+			s := parent.left
+			if s.clr == red {
+				s.clr = black
+				parent.clr = red
+				rbt.rotateRight(parent)
+				s = parent.left
 			}
-			if (w.left == nil || w.left.clr == black) && (w.right == nil || w.right.clr == black) {
-				w.clr = red
-				x = x.parent
+			if (s.left == nil || s.left.clr == black) && (s.right == nil || s.right.clr == black) {
+				s.clr = red
+				x = parent
+				parent = x.parent
 			} else {
-				if w.left == nil || w.left.clr == black {
-					w.right.clr = black
-					w.clr = red
-					rbt.rotateLeft(w)
-					w = x.parent.left
+				if s.left == nil || s.left.clr == black {
+					if s.right != nil {
+						s.right.clr = black
+					}
+					s.clr = red
+					rbt.rotateLeft(s)
+					s = parent.left
 				}
-				w.clr = x.parent.clr
-				x.parent.clr = black
-				if w.left != nil {
-					w.left.clr = black
+				s.clr = parent.clr
+				parent.clr = black
+				if s.left != nil {
+					s.left.clr = black
 				}
-				rbt.rotateRight(x.parent)
+				rbt.rotateRight(parent)
 				x = rbt.root
 			}
 		}
