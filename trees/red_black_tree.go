@@ -2,7 +2,6 @@ package trees
 
 import (
 	"fmt"
-	"log"
 	"sync"
 
 	gocollections "github.com/0x0FACED/go-collections"
@@ -38,7 +37,6 @@ func (rbt *rbt[T]) Delete(item T) error {
 	if node == nil {
 		return fmt.Errorf(gocollections.ErrNotFound)
 	}
-	log.Println("node val: ", node.val)
 	rbt.deleteHelper(node)
 
 	return nil
@@ -65,9 +63,33 @@ func (rbt *rbt[T]) InOrder() []T {
 	return items
 }
 
+func (rbt *rbt[T]) PreOrder() []T {
+	rbt.mu.Lock()
+	defer rbt.mu.Unlock()
+
+	var items []T
+	rbt.preOrderHelper(rbt.root, &items)
+	return items
+}
+
+func (rbt *rbt[T]) PostOrder() []T {
+	rbt.mu.Lock()
+	defer rbt.mu.Unlock()
+
+	var items []T
+	rbt.postOrderHelper(rbt.root, &items)
+	return items
+}
+
+func (rbt *rbt[T]) LevelOrder() []T {
+	rbt.mu.Lock()
+	defer rbt.mu.Unlock()
+
+	return rbt.levelOrderHelper()
+}
 func (rbt *rbt[T]) PrintTree() {
 	rbt.mu.Lock()
 	defer rbt.mu.Unlock()
 
-	printTree(rbt.root, "", true)
+	rbt.printTree(rbt.root, "", true)
 }
