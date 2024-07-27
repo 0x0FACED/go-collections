@@ -131,41 +131,108 @@ func (rbt *rbt[T]) rotateRight(y *rbt_node[T]) {
 	y.parent = x
 }
 
+// Super Uber Mega HARD to implement
+//
+// IMPORTANT: node that we want to delete = NODE
+//
+// So, we ha ve a bag of cases with delete operation:
+//
+// 1. If NODE have NO children -> just delete NODE AND if NODE.clr = black -> fixDelete with nil child and node.parent
+//
+// 2. If NODE have 1 child
 func (rbt *rbt[T]) deleteHelper(node *rbt_node[T]) {
-	y := node
-	y_original_clr := y.clr
-	var x *rbt_node[T]
-	if node.left == nil {
-		x = node.right
-		rbt.transplant(node, node.right)
-	} else if node.right == nil {
-		x = node.left
-		rbt.transplant(node, node.left)
-	} else {
-		y = rbt.findMin(node.right)
-		y_original_clr = y.clr
-		x = y.right
-		if y.parent == node {
-			if x != nil {
-				x.parent = y
-			}
-		} else {
-			rbt.transplant(y, y.right)
-			y.right = node.right
-			y.right.parent = y
+	var child, par *rbt_node[T]
+	var color COLOR
+
+	// if NO children
+	if node.left == nil && node.right == nil {
+		// if node.parent == nil -> we want to delete node with no children -> tree will be nil
+		if node.parent == nil {
+			rbt.root = nil
+			return
 		}
-		rbt.transplant(node, y)
-		y.left = node.left
-		y.left.parent = y
-		y.clr = node.clr
+
+		// if out NODE is parent.left child
+		if node.parent.left == node {
+			node.parent.left = nil
+		} else { // otherwise, parent.right
+			node.parent.right = nil
+		}
+
+		// Important moment: if NODE is black -> his parent black too
+		// So we have to call fixDelete with nil child and node.parent
+		if node.clr == black {
+			rbt.fixDelete(nil, node.parent)
+		}
+
+		// fast return
+		return
 	}
-	if y_original_clr == black {
-		rbt.fixDelete(x)
+
+	// If NODE has 1 child: left or right
+	if (node.left != nil && node.right == nil) || (node.left == nil && node.right != nil) {
+		// link parent
+		par = node.parent
+
+		// we determine where child is located
+		if node.left == nil {
+			child = node.right
+		} else {
+			child = node.left
+		}
+		// save color
+		color = node.clr
+
+		// change child.parent from NODE to NODE.parent (par)
+		child.parent = par
+
+		// if parent == root
+		if par == nil {
+			rbt.root = child
+		} else {
+			if node == par.left {
+				par.left = child
+			} else {
+				par.right = child
+			}
+		}
+		// if NODE was black -> fixDelete with our child and parent
+		if color == black {
+			rbt.fixDelete(child, par)
+		}
+		return
 	}
+
+	// The last case: NODE has 2 children
+	// We ALWAYS have to find highest element from LEFT subtree!
+	// For example:
+	// we have tree:
+	//
+	//								100 (root)
+	//							  /            \
+	//                         [95]             105
+	//                        /    \          /     \
+	//                      90      97      103      110
+	//                    /    \           /
+	//                  85      92       102
+	//                 /  \    /  \
+	//               80   87  91  (93) <- this is will be our new val of node with val 95
+	//
+	// And we want to delete node with val = 95
+	// So, this node has 2 children
+	// We have to go to left subtree and than go to the right
+	// And we will find max element
+	// In this example we will find val = 93
+	// successor = 93
+	// we recursively call deleteHelper with new node.val
+	// We do it because we need to fix our tree if needed (color black)
+	//
+	// successor always have 0 or 1 child
+	successor := rbt.findMinRight(node.left)
+	node.val = successor.val
+	rbt.deleteHelper(successor)
 }
 
-// find the in-order successor
-func (rbt *rbt[T]) findMin(node *rbt_node[T]) *rbt_node[T] {
 	dummy := node
 	for dummy.left != nil {
 		dummy = dummy.left
