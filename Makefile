@@ -1,6 +1,6 @@
 MODULE := github.com/0x0FACED/go-collections
 
-.PHONY: test-list test-stack test-queue test-all
+.PHONY: test-list test-stack test-queue test-all test-rbt
 
 test-list:
 	go test ./list/
@@ -16,3 +16,6 @@ test-all:
 
 test-list-race:
 	go test -race -v -timeout 120s ./list/
+
+test-rbt:
+	go test ./trees/
