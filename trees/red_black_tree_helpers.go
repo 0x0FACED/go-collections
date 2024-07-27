@@ -233,9 +233,10 @@ func (rbt *rbt[T]) deleteHelper(node *rbt_node[T]) {
 	rbt.deleteHelper(successor)
 }
 
+func (rbt *rbt[T]) findMinRight(node *rbt_node[T]) *rbt_node[T] {
 	dummy := node
-	for dummy.left != nil {
-		dummy = dummy.left
+	for dummy.right != nil {
+		dummy = dummy.right
 	}
 	return dummy
 }
