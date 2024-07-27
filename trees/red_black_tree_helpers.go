@@ -1,6 +1,10 @@
 package trees
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/0x0FACED/go-collections/queue"
+)
 
 func (rbt *rbt[T]) insertHelper(curr *rbt_node[T], item T) *rbt_node[T] {
 	newNode := &rbt_node[T]{val: item, clr: red}
@@ -98,10 +102,13 @@ func (rbt *rbt[T]) fixInsert(curr *rbt_node[T]) {
 func (rbt *rbt[T]) rotateLeft(x *rbt_node[T]) {
 	y := x.right
 	x.right = y.left
+
 	if y.left != nil {
 		y.left.parent = x
 	}
+
 	y.parent = x.parent
+
 	if x.parent == nil {
 		rbt.root = y
 	} else if x == x.parent.left {
@@ -109,6 +116,7 @@ func (rbt *rbt[T]) rotateLeft(x *rbt_node[T]) {
 	} else {
 		x.parent.right = y
 	}
+
 	y.left = x
 	x.parent = y
 }
@@ -116,10 +124,13 @@ func (rbt *rbt[T]) rotateLeft(x *rbt_node[T]) {
 func (rbt *rbt[T]) rotateRight(y *rbt_node[T]) {
 	x := y.left
 	y.left = x.right
+
 	if x.right != nil {
 		x.right.parent = y
 	}
+
 	x.parent = y.parent
+
 	if y.parent == nil {
 		rbt.root = x
 	} else if y == y.parent.right {
@@ -127,6 +138,7 @@ func (rbt *rbt[T]) rotateRight(y *rbt_node[T]) {
 	} else {
 		y.parent.left = x
 	}
+
 	x.right = y
 	y.parent = x
 }
@@ -349,12 +361,58 @@ func (rbt *rbt[T]) inOrderHelper(curr *rbt_node[T], items *[]T) {
 	rbt.inOrderHelper(curr.right, items)
 }
 
-func printTree[T comparable](node *rbt_node[T], indent string, last bool) {
+func (rbt *rbt[T]) preOrderHelper(curr *rbt_node[T], items *[]T) {
+	if curr == nil {
+		return
+	}
+
+	*items = append(*items, curr.val)
+	rbt.preOrderHelper(curr.left, items)
+	rbt.preOrderHelper(curr.right, items)
+}
+
+func (rbt *rbt[T]) postOrderHelper(curr *rbt_node[T], items *[]T) {
+	if curr == nil {
+		return
+	}
+
+	rbt.postOrderHelper(curr.left, items)
+	rbt.postOrderHelper(curr.right, items)
+	*items = append(*items, curr.val)
+}
+
+func (rbt *rbt[T]) levelOrderHelper() []T {
+	q := queue.NewDynamicListQueue[rbt_node[T]]()
+	items := make([]T, 0)
+	q.Enqueue(*rbt.root)
+	for !q.IsEmpty() {
+		child, err := q.Dequeue()
+		if err != nil {
+			return nil
+		}
+		items = append(items, child.val)
+		if child.left != nil {
+			q.Enqueue(*child.left)
+		}
+		if child.right != nil {
+			q.Enqueue(*child.right)
+		}
+	}
+
+	return items
+}
+
+func (rbt *rbt[T]) printTree(node *rbt_node[T], indent string, last bool) {
 	if node != nil {
 		fmt.Print(indent)
 		if last {
-			fmt.Print("R----")
-			indent += "     "
+			if node == rbt.root {
+				fmt.Print("H----")
+				indent += "     "
+			} else {
+				fmt.Print("R----")
+				indent += "     "
+			}
 		} else {
 			fmt.Print("L----")
 			indent += "|    "
@@ -364,7 +422,7 @@ func printTree[T comparable](node *rbt_node[T], indent string, last bool) {
 			color = "BLACK"
 		}
 		fmt.Printf("%v (%s)\n", node.val, color)
-		printTree(node.left, indent, false)
-		printTree(node.right, indent, true)
+		rbt.printTree(node.left, indent, false)
+		rbt.printTree(node.right, indent, true)
 	}
 }
