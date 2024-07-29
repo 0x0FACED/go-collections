@@ -150,6 +150,12 @@ func (l *singlyLinkedList[T]) RemoveAt(pos int) error {
 		return fmt.Errorf(gocollections.ErrOutOfBounds)
 	}
 
+	if pos == 0 {
+		l.head = l.head.next
+		l.size--
+		return nil
+	}
+
 	dummy := l.head
 	cnt := 0
 	for cnt < pos-1 {
