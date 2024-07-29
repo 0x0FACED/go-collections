@@ -18,14 +18,14 @@ This library provides implementations of various collection data structures full
     - [x] List Queue
     - [x] Dynamic List Queue
     - [x] Stack Queue (Two stacks)
-- [ ] _Deque (Double-Ended Queue) **(In Progress)**_
-- [ ] _Priority Queue **(In Progress)**_
+- [x] Deque (Double-Ended Queue)
+- [x] Priority Queue
 - [x] Binary Search Tree (BST)
 - [ ] AVL Tree
 - [x] Red-Black Tree
 - [ ] B-Tree
 - [ ] Trie
-- [ ] Heap (Min-Heap, Max-Heap)
+- [ ] _Heap (Min-Heap, Max-Heap) **(In Progress)**_
 - [ ] Graph (Adjacency List, Adjacency Matrix)
 - [ ] Set (Hash Set, Tree Set)
 - [ ] Skip List
