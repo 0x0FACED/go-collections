@@ -12,7 +12,7 @@ test-queue:
 	go test ./queue/
 
 test-all:
-	go test ./...
+	go test -race -v -timeout 600s ./...
 
 test-list-race:
 	go test -race -v -timeout 120s ./list/
