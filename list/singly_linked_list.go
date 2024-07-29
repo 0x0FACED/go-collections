@@ -14,7 +14,7 @@ type singlyLinkedList[T comparable] struct {
 
 	size int
 
-	mu sync.Mutex
+	mu sync.RWMutex
 }
 
 func NewSinglyLinked[T comparable]() *singlyLinkedList[T] {
@@ -30,8 +30,9 @@ func (l *singlyLinkedList[T]) Tail() *node[T] {
 }
 
 func (l *singlyLinkedList[T]) Add(item T) error {
-	l.mu.Lock()
-	defer l.mu.Unlock()
+	if l.mu.TryLock() {
+		defer l.mu.Unlock()
+	}
 
 	node := &node[T]{val: item}
 	if l.size == 0 {
@@ -46,10 +47,10 @@ func (l *singlyLinkedList[T]) Add(item T) error {
 }
 
 func (l *singlyLinkedList[T]) Insert(item T, pos int) error {
-	l.mu.Lock()
-	defer l.mu.Unlock()
+	l.mu.RLock()
+	defer l.mu.RUnlock()
 
-	if l.size == 0 {
+	if l.size == 0 || pos == l.size {
 		return l.Add(item)
 	}
 
@@ -97,7 +98,6 @@ func (l *singlyLinkedList[T]) RemoveLast() error {
 	// 1 3 5 7 8 9 <- before removing
 	// 1 3 5 7 8 <- must be after
 	// traverse to size-2 pos -> 1 3 5 7 [8] 9
-	//
 	l.tail = dummy
 	dummy.next = nil
 	l.size--
@@ -252,8 +252,9 @@ func (l *singlyLinkedList[T]) Clear() error {
 }
 
 func (l *singlyLinkedList[T]) Print() {
-	l.mu.Lock()
-	defer l.mu.Unlock()
+	if l.mu.TryLock() {
+		defer l.mu.Unlock()
+	}
 
 	fmt.Println("size:", l.size)
 	fmt.Println("data:")
