@@ -24,8 +24,8 @@ This library provides implementations of various collection data structures full
 - [ ] AVL Tree
 - [x] Red-Black Tree
 - [ ] B-Tree
-- [ ] Trie
-- [ ] _Heap (Min-Heap, Max-Heap) **(In Progress)**_
+- [ ] _Trie **(In Progress)**_
+- [x] Heap (Min-Heap, Max-Heap)
 - [ ] Graph (Adjacency List, Adjacency Matrix)
 - [ ] Set (Hash Set, Tree Set)
 - [ ] Skip List
