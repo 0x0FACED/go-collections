@@ -11,7 +11,7 @@ import (
 // Circular Singly Linked List (CSLL) is a linked list where the last node points back to the first node.
 //
 // It supports operations such as adding, inserting, removing, and retrieving elements.
-type csll[T comparable] struct {
+type csll[T any] struct {
 	head *node[T]
 	tail *node[T]
 
@@ -23,7 +23,7 @@ type csll[T comparable] struct {
 // NewCircularSingly creates a new, empty circular singly linked list.
 //
 // Returns: pointer to a new csll.
-func NewCircularSingly[T comparable]() *csll[T] {
+func NewCircularSingly[T any]() *csll[T] {
 	return &csll[T]{}
 }
 
