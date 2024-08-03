@@ -1,7 +1,7 @@
 package list
 
 // dnode is a double node - node with next and prev ptrs
-type dnode[T comparable] struct {
+type dnode[T any] struct {
 	val T
 
 	next *dnode[T]
@@ -9,7 +9,7 @@ type dnode[T comparable] struct {
 }
 
 // node is a struct of list to store val and ptr to next node
-type node[T comparable] struct {
+type node[T any] struct {
 	val  T
 	next *node[T]
 }
@@ -25,19 +25,19 @@ type node[T comparable] struct {
 //	var arrayList *list.ListSort[int]
 //
 // There are MutableList methods:
-type MutableList[T comparable] interface {
+type MutableList[T any] interface {
 	headTail[T]
 	List[T]
 }
 
-type headTail[T comparable] interface {
+type headTail[T any] interface {
 	Head() *node[T]
 
 	Tail() *node[T]
 }
 
 // Common List interface with common operations
-type List[T comparable] interface {
+type List[T any] interface {
 
 	// Add adds val to the end of list
 	Add(item T) error
