@@ -8,7 +8,7 @@ import (
 	gocollections "github.com/0x0FACED/go-collections"
 )
 
-type doublyLinkedList[T comparable] struct {
+type doublyLinkedList[T any] struct {
 	head *dnode[T]
 	tail *dnode[T]
 
@@ -17,7 +17,7 @@ type doublyLinkedList[T comparable] struct {
 	mu sync.Mutex
 }
 
-func NewDoublyLinked[T comparable]() *doublyLinkedList[T] {
+func NewDoublyLinked[T any]() *doublyLinkedList[T] {
 	return &doublyLinkedList[T]{}
 }
 
