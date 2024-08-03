@@ -7,14 +7,14 @@ import (
 )
 
 // dlq - Dynamic List Queue
-type dlq[T comparable] struct {
+type dlq[T any] struct {
 	head *node[T]
 	tail *node[T]
 
 	size int
 }
 
-func NewDynamicListQueue[T comparable]() *dlq[T] {
+func NewDynamicListQueue[T any]() *dlq[T] {
 	return &dlq[T]{
 		size: 0,
 	}
