@@ -1,6 +1,6 @@
 package queue
 
-type node[T comparable] struct {
+type node[T any] struct {
 	val T
 
 	next *node[T]
@@ -14,7 +14,7 @@ type node[T comparable] struct {
 // #Queue interface have IsFull() method
 //
 // unlike Dynamic Queue
-type Queue[T comparable] interface {
+type Queue[T any] interface {
 	Enqueue(item T) error
 
 	Dequeue() (*T, error)
@@ -28,13 +28,13 @@ type Queue[T comparable] interface {
 	IsFull() bool
 }
 
-type doubleEnded[T comparable] interface {
+type doubleEnded[T any] interface {
 	FrontEnqueue(item T) error
 	FrontDequeue() (*T, error)
 	FrontPeek() (*T, error)
 }
 
-type Deque[T comparable] interface {
+type Deque[T any] interface {
 	Queue[T]
 	doubleEnded[T]
 }
@@ -52,7 +52,7 @@ type Deque[T comparable] interface {
 // PeekMax() same as DequeueMax(), but doesn't remove.
 //
 // PeekMin() same as DequeueMin(), but doesn't remove.
-type pq[T comparable] interface {
+type pq[T any] interface {
 	Enqueue(item T, priority int) error
 
 	DequeueMax() (*T, error)

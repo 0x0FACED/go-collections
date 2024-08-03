@@ -7,14 +7,14 @@ import (
 )
 
 // dsq - Dynamic Slice Queue
-type dsq[T comparable] struct {
+type dsq[T any] struct {
 	queue []T
 
 	front int
 	size  int
 }
 
-func NewDynamicSliceQueue[T comparable]() *dsq[T] {
+func NewDynamicSliceQueue[T any]() *dsq[T] {
 	return &dsq[T]{
 		queue: make([]T, 0),
 		front: 0,

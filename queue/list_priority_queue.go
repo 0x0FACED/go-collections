@@ -7,18 +7,18 @@ import (
 	"github.com/0x0FACED/go-collections/list"
 )
 
-type pq_item[T comparable] struct {
+type pq_item[T any] struct {
 	priority int
 	item     T
 }
 
 // lpq - List Priority Queue
-type lpq[T comparable] struct {
+type lpq[T any] struct {
 	list list.MutableList[pq_item[T]]
 }
 
 // LPQ - List Priority Queue
-func NewLPQ[T comparable]() *lpq[T] {
+func NewLPQ[T any]() *lpq[T] {
 	return &lpq[T]{
 		list: list.NewSinglyLinked[pq_item[T]](),
 	}
