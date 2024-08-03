@@ -21,10 +21,10 @@ This library provides implementations of various collection data structures full
 - [x] Deque (Double-Ended Queue)
 - [x] Priority Queue
 - [x] Binary Search Tree (BST)
-- [ ] AVL Tree
+- [ ] _AVL Tree **(In Progress)**_
 - [x] Red-Black Tree
 - [ ] B-Tree
-- [ ] _Trie **(In Progress)**_
+- [x] Trie
 - [x] Heap (Min-Heap, Max-Heap)
 - [ ] Graph (Adjacency List, Adjacency Matrix)
 - [ ] Set (Hash Set, Tree Set)
