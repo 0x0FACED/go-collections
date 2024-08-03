@@ -10,7 +10,7 @@ import (
 
 type Comparator[T any] func(a, b T) bool
 
-type arrayList[T comparable] struct {
+type arrayList[T any] struct {
 	items []T
 
 	size        int
@@ -20,7 +20,7 @@ type arrayList[T comparable] struct {
 	mu sync.Mutex
 }
 
-func NewArrayList[T comparable]() *arrayList[T] {
+func NewArrayList[T any]() *arrayList[T] {
 	return &arrayList[T]{
 		cap:         10,
 		items:       make([]T, 10),
