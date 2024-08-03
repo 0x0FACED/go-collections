@@ -8,7 +8,7 @@ import (
 	gocollections "github.com/0x0FACED/go-collections"
 )
 
-type singlyLinkedList[T comparable] struct {
+type singlyLinkedList[T any] struct {
 	head *node[T]
 	tail *node[T]
 
@@ -17,7 +17,7 @@ type singlyLinkedList[T comparable] struct {
 	mu sync.RWMutex
 }
 
-func NewSinglyLinked[T comparable]() *singlyLinkedList[T] {
+func NewSinglyLinked[T any]() *singlyLinkedList[T] {
 	return &singlyLinkedList[T]{}
 }
 
