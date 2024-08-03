@@ -9,7 +9,7 @@ import (
 )
 
 // cdll - Ciruclar Doubly Linked List
-type cdll[T comparable] struct {
+type cdll[T any] struct {
 	head *dnode[T]
 	tail *dnode[T]
 
@@ -19,7 +19,7 @@ type cdll[T comparable] struct {
 }
 
 // CDLL - Doubly Circular Linked List
-func NewCDLL[T comparable]() *cdll[T] {
+func NewCDLL[T any]() *cdll[T] {
 	return &cdll[T]{}
 }
 
