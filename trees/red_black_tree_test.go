@@ -17,6 +17,35 @@ var compare = func(a, b int) int {
 	}
 }
 
+type Person struct {
+	Name string
+	Age  int
+}
+
+var comparePersonByAge = func(a, b Person) int {
+	if a.Age == b.Age {
+		return 0
+	} else if a.Age < b.Age {
+		return -1
+	} else {
+		return 1
+	}
+}
+
+func TestRBT_InsertPerson(t *testing.T) {
+	tr := NewRBT(comparePersonByAge)
+	persons := make([]Person, 0)
+
+	for i := 10; i < 20; i++ {
+		persons = append(persons, Person{Name: "Alexander", Age: i})
+	}
+	for _, person := range persons {
+		tr.Insert(person)
+	}
+
+	tr.PrintTree()
+}
+
 func TestRBT_Insert(t *testing.T) {
 	tr := NewRBT[int](compare)
 
