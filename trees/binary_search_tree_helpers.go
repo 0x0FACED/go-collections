@@ -63,7 +63,7 @@ func (bst *bst[T]) insertHelper(curr *node[T], item T) *node[T] {
 	}
 	// if new item < curr.val compare returns -1 (tree's val) than we go to left subtree
 	// else -> our new value >= curr.val -> go to right
-	if bst.compare(item, curr.val) == -1 {
+	if bst.compare(item, curr.val) < 0 {
 		curr.left = bst.insertHelper(curr.left, item)
 	} else {
 		curr.right = bst.insertHelper(curr.right, item)
