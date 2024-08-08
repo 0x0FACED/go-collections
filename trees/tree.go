@@ -49,11 +49,24 @@ type rbt_node[T comparable] struct {
 
 // ==========================================================================================
 
-// traversal is the interface that has 3 methods to impl:
+// node of AVL Tree
+type avl_node[T comparable] struct {
+	val T
+
+	left   *avl_node[T]
+	right  *avl_node[T]
+	height int
+}
+
+// ==========================================================================================
+
+// traversal is the interface that has 4 methods to impl:
 //
-// InOrder(), PreOrder(), PostOrder()
+// InOrder(), PreOrder(), PostOrder(), LevelOrder()
 //
-// BST (Binary Search Tree) has these implementations
+// .BST (Binary Search Tree) has these implementations
+//
+// .RBT (Red-Black Tree) has these implementations
 type traversal[T comparable] interface {
 	InOrder() []T
 	PreOrder() []T
